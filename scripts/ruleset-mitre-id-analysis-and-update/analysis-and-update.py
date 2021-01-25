@@ -9,6 +9,7 @@ import os
 from xml.etree import ElementTree
 import glob
 import json
+from bs4 import BeautifulSoup
 
 from pyattck import Attck
 
@@ -51,6 +52,7 @@ for rule_file in rule_files:
             ruleset_wrapper.write('\n</ruleset>')    
 
         # Parse the content of ruleset_wrapper.xml
+        # if(True):
         try:
         # tree = ET.parse('./ruleset_wrapper.xml', parser)
             parser = ElementTree.XMLParser(target=CommentedTreeBuilder())
@@ -106,11 +108,14 @@ for rule_file in rule_files:
                         continue
 
             # Write down the corrected tree to new ruleset files
-            tree.write('./downloaded-ruleset/' + os.path.basename(rule_file))
+            # tree.write('./downloaded-ruleset/' + os.path.basename(rule_file))
+            x = ElementTree.tostring(ruleset)
+            print(BeautifulSoup(x, 'xml').prettify(), file=open('./downloaded-ruleset/' + os.path.basename(rule_file), 'w'))
             
             file1 = open('./downloaded-ruleset/' + os.path.basename(rule_file), 'r') 
             Lines = file1.readlines() 
 
+            del Lines[0]
             del Lines[0]
             del Lines[-1]
 
