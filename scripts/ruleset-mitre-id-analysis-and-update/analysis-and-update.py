@@ -11,10 +11,14 @@ from lxml import etree
 import glob
 import json
 from bs4 import BeautifulSoup
+from io import StringIO
+import sys
 
 from pyattck import Attck
 
 attack = Attck()
+
+temp_out = StringIO()
 
 # class CommentedTreeBuilder(etree.TreeBuilder):
 #     def comment(self, data):
@@ -79,7 +83,8 @@ for rule_file in rule_files:
                                 # Populate the current_ruleset_mitre_status dict for writing to JSON
                                 print('Longitud de la lista MITRE:', len(mitre))
                                 for id in mitre.findall('id'):
-                                    print(id)
+                                    # print(id)
+                                    etree.dump(id)
                                     mitre_attrib_copy = mitre_attrib.copy()
                                     if 'technique' in id.attrib: mitre_attrib_copy['technique'] = id.attrib['technique']
                                     if 'tactic' in id.attrib: mitre_attrib_copy['tactic'] = id.attrib['tactic']
@@ -89,7 +94,7 @@ for rule_file in rule_files:
 
                                 # **** Correct attributes in the XML tree ****
                                     # 1- Remove previous IDs one by one
-                                    mitre.remove(id)
+                                    # mitre.remove(id)
                                 # 2- Add new IDs with attributes under the MITRE tag (will duplicate if multiple MITRE tags exist)
                                 for mitre_id_attribs in modified_ruleset_mitre_status_dict[rule.attrib['id']]['mitre']:
                                     id = etree.SubElement(mitre, 'id')
@@ -97,8 +102,16 @@ for rule_file in rule_files:
                                     id.set('tactic', mitre_id_attribs['tactic'])
                                     id.set('tacticID', mitre_id_attribs['tacticID'])
                                     id.text = mitre_id_attribs['techniqueID']
+                                    mitre.remove(id)
+                                    etree.dump(id)
 
-                                etree.dump(mitre)
+                                # print(mitre.getvalue())
+                                sys.stdout = temp_out
+                                # etree.dump(mitre)
+                                sys.stdout = sys.__stdout__
+                                new_mitre_ids = temp_out.getvalue()
+                                print('Nuevos MITREs:', new_mitre_ids)
+                                # print (new_mitre_ids.split('</id>'))
                             # ---------------------
 
                             print('MITRE IDs actuales en regla', rule.attrib['id'], '-', rule.find('description').text, file=open("changes_to_apply.txt", "a"))
