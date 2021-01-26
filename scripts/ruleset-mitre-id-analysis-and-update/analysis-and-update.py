@@ -5,8 +5,9 @@
 # - Generar el archivo JSON con el formato requerido
 
 import os
-# import xml.etree.ElementTree as ET
-from xml.etree import ElementTree
+# import xml.etree.etree as ET
+# from xml.etree import ElementTree
+from lxml import etree
 import glob
 import json
 from bs4 import BeautifulSoup
@@ -15,11 +16,11 @@ from pyattck import Attck
 
 attack = Attck()
 
-class CommentedTreeBuilder(ElementTree.TreeBuilder):
-    def comment(self, data):
-        self.start(ElementTree.Comment, {})
-        self.data(data)
-        self.end(ElementTree.Comment)
+# class CommentedTreeBuilder(etree.TreeBuilder):
+#     def comment(self, data):
+#         self.start(etree.Comment, {})
+#         self.data(data)
+#         self.end(etree.Comment)
 
 # Get all the paths of the XML rule files from the ruleset folder
 rule_files = glob.glob('C:\\Users\\juarc\\Documents\\GitHub\\wazuh\\ruleset\\rules\\*.xml')
@@ -55,9 +56,10 @@ for rule_file in rule_files:
         # if(True):
         try:
         # tree = ET.parse('./ruleset_wrapper.xml', parser)
-            parser = ElementTree.XMLParser(target=CommentedTreeBuilder())
-            tree = ElementTree.parse('./ruleset_wrapper.xml', parser)
-            # ElementTree.indent(tree, space=" ", level=0)
+            # parser = etree.XMLParser(target=CommentedTreeBuilder())
+            # tree = etree.parse('./ruleset_wrapper.xml', parser)
+            tree = etree.parse('./ruleset_wrapper.xml')
+            # etree.indent(tree, space=" ", level=0)
             # print("Aca estamos:", os.path.basename(rule_file))
             ruleset = tree.getroot()
         
@@ -75,8 +77,9 @@ for rule_file in rule_files:
                             # print(current_ruleset_mitre_status)
                             for mitre in rule.findall('mitre'):
                                 # Populate the current_ruleset_mitre_status dict for writing to JSON
+                                print('Longitud de la lista MITRE:', len(mitre))
                                 for id in mitre.findall('id'):
-                                    # print(id.text)
+                                    print(id)
                                     mitre_attrib_copy = mitre_attrib.copy()
                                     if 'technique' in id.attrib: mitre_attrib_copy['technique'] = id.attrib['technique']
                                     if 'tactic' in id.attrib: mitre_attrib_copy['tactic'] = id.attrib['tactic']
@@ -89,11 +92,13 @@ for rule_file in rule_files:
                                     mitre.remove(id)
                                 # 2- Add new IDs with attributes under the MITRE tag (will duplicate if multiple MITRE tags exist)
                                 for mitre_id_attribs in modified_ruleset_mitre_status_dict[rule.attrib['id']]['mitre']:
-                                    id = ElementTree.SubElement(mitre, 'id')
+                                    id = etree.SubElement(mitre, 'id')
                                     id.set('technique', mitre_id_attribs['technique'])
                                     id.set('tactic', mitre_id_attribs['tactic'])
                                     id.set('tacticID', mitre_id_attribs['tacticID'])
                                     id.text = mitre_id_attribs['techniqueID']
+
+                                etree.dump(mitre)
                             # ---------------------
 
                             print('MITRE IDs actuales en regla', rule.attrib['id'], '-', rule.find('description').text, file=open("changes_to_apply.txt", "a"))
@@ -108,14 +113,14 @@ for rule_file in rule_files:
                         continue
 
             # Write down the corrected tree to new ruleset files
-            # tree.write('./downloaded-ruleset/' + os.path.basename(rule_file))
-            x = ElementTree.tostring(ruleset)
-            print(BeautifulSoup(x, 'xml').prettify(), file=open('./downloaded-ruleset/' + os.path.basename(rule_file), 'w'))
+            
+            tree.write('./downloaded-ruleset/' + os.path.basename(rule_file), pretty_print=True)
+            # x = etree.tostring(ruleset)
+            # print(BeautifulSoup(x, 'xml').prettify(), file=open('./downloaded-ruleset/' + os.path.basename(rule_file), 'w'))
             
             file1 = open('./downloaded-ruleset/' + os.path.basename(rule_file), 'r') 
             Lines = file1.readlines() 
 
-            del Lines[0]
             del Lines[0]
             del Lines[-1]
 
