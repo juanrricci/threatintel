@@ -1,0 +1,9 @@
+---
+meta:
+  name: Windows Decoder
+  version: 0.0.0
+  author: Wazuh Inc.
+  date: '2021-02-04'
+prematch: {}
+options: {}
+mapping: {}
