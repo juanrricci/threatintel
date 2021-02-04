@@ -6,4 +6,10 @@ meta:
   date: '2021-02-04'
 prematch: {}
 options: {}
-mapping: {}
+mapping:
+  timestamp: {}
+  channel: {}
+  hostname: {}
+  event-id: {}
+  severity: {}
+  message: {}

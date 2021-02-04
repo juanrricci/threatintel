@@ -1,4 +1,5 @@
 import json
+import yaml
 
 def validateJSON(jsonData):
     try:
@@ -8,7 +9,10 @@ def validateJSON(jsonData):
     return True
 
 def windowsLogDecode(windowsLog):
-
+    with open('000-Windows.yml') as windowsDecoderFile:
+        windowsDecoders = yaml.load(windowsDecoderFile, Loader=yaml.FullLoader)
+        print(windowsDecoders)
+        
 
 def main():
     with open('logs.log') as logs:
