@@ -25,24 +25,15 @@ def parseAllDecoderFiles():
 
 def main():
     prematchToDecoderFilenameList = parseAllDecoderFiles()
-    # leer todos los yml y crear un diccionario
-    # with open('ymlDir') as ymls:
-    #   for yml in ymls:
-    #     prematchDict[yml] = contenido del prematch del yml
-    # prematch, yml
-    # prematch_to_yml = has_field('win.system.providerName'), '000-Windows.yml'
-    # prematch_to_yml = has_field('srcip'), '001-Suricata.yml'
-    # prematchDict['prematch'] = [has_field('win.system.providerName'),has_field('win.system.providerGUID')]
-    # prematchDict['decoder'] = '000-Windows.yml'
 
-    # 1.) Iterate over logs.
-    # 1.1) Iterate over decoders.
-    # 1.1.1) Check if decoder has 'has_field' prematch and log is JSON.
-    # 1.1.1.1) If True: check if field exists. If False: skip decoder.
-    # 1.1.1.1.1) If True: decode.
-    # 1.1.2) Check if decoder has 'regex' prematch and log is not JSON.
-    # 1.1.2.1) If True: check if regex matches. If False: skip decode.
-    # 1.1.2.1.1) If True: decode.
+    # - Iterate over logs.
+    # -- Iterate over decoders.
+    # --- Check if decoder has 'has_field' prematch and log is JSON.
+    # ---- If True: check if field exists. If False: skip decoder.
+    # ----- If True: decode.
+    # --- Check if decoder has 'regex' prematch and log is not JSON.
+    # ---- If True: check if regex matches. If False: skip decode.
+    # ----- If True: decode.
 
     with open('logs.log') as logs:
         for log in logs:
@@ -51,6 +42,7 @@ def main():
                 prematchType = list(prematchToDecoderFilename['prematch'].keys())[0]
                 if prematchType == 'has_field' and logIsJSON:
                     print('HAS FIELD and IS JSON')
+
                 elif prematchType == 'regex' and not logIsJSON:
                     print('REGEX and IS NOT JSON')
                 else:
