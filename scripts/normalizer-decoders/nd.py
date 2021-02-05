@@ -28,8 +28,9 @@ def existFields(log, prematchFields):
     print('Log:', log)
     for prematchField in prematchFields:
         print('Prematch field:', prematchField)
-        p = re.compile('\w+\.\w+\.\w+')
-        p.match(prematchField)
+        p = re.compile('\w+')
+        m = p.findall(prematchField)
+        print('Groups:', m)
 
 
 def main():
