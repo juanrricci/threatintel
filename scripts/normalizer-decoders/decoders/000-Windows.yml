@@ -6,14 +6,14 @@ meta:
   date: '2021-02-04'
 prematch:
   has_field: 
-    - win.system.providerName
+    - win.system.providerNamer
     - win.system.providerGuid
 options: {}
 mapping:
   timestamp: win.eventdata.utcTime
-  channel: {}
-  hostname: {}
-  event-id: {}
-  severity: {}
-  message: {}
-  full-log: {}
+  channel: win.system.channel
+  hostname: win.system.computer
+  event-id: win.system.eventID
+  severity: win.system.severityValue
+  message: win.system.message
+  full-log: win.system.message

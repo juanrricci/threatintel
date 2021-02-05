@@ -26,17 +26,20 @@ def parseAllDecoderFiles():
     return prematchToDecoderFilenameList
 
 def existFields(jsonLog, prematchFields):
-    print('JSON Log:', jsonLog)
+    # print('JSON Log:', jsonLog)
     for prematchField in prematchFields:
-        print('Prematch field:', prematchField)
-        p = re.compile('\w+')
-        m = p.findall(prematchField)
-        print('Groups:', m)
+        # print('Prematch field:', prematchField)
+        # p = re.compile('\w+')
+        # m = p.findall(prematchField)
+        # print('Groups:', m)
         # return True if jsonLog[m[0]][m[1]][m[2]] else False
         benedictedLog = benedict(jsonLog)
-        print('Do', prematchField, 'nested fields exist?')
-        print(True) if prematchField in benedictedLog else print(False)
-
+        # print('Benedicted log:', benedictedLog)
+        if not prematchField in benedictedLog:
+            print('Prematch field', prematchField, 'not found.')
+            return False
+        else: print('Prematch field', prematchField, 'found. OK.')
+    return True
 
 
 def main():
@@ -63,7 +66,7 @@ def main():
                 if prematchType == 'has_field' and logIsJSON:
                     print('HAS FIELD and IS JSON')
                     # print('Do fields exist?',existFields(jsonLog, prematchToDecoderFilename['prematch']['has_field']))
-                    existFields(jsonLog, prematchToDecoderFilename['prematch']['has_field'])
+                    print('existFields return:', existFields(jsonLog, prematchToDecoderFilename['prematch']['has_field']))
                 elif prematchType == 'regex' and not logIsJSON:
                     print('REGEX and IS NOT JSON')
                 else:
