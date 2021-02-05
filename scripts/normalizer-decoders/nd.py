@@ -3,6 +3,7 @@ from pprint import pprint
 from logDecoder import logDecode
 import glob
 import yaml
+import re
 
 def validateJSON(jsonData):
     try:
@@ -23,6 +24,12 @@ def parseAllDecoderFiles():
     # print(list(prematchToDecoderFilenameList[0]['prematch'].keys()))
     return prematchToDecoderFilenameList
 
+def existFields(log, prematchFields):
+    print('Log:', log)
+    for prematchField in prematchFields:
+        print('Prematch field:', prematchField)
+
+
 def main():
     prematchToDecoderFilenameList = parseAllDecoderFiles()
 
@@ -40,9 +47,12 @@ def main():
             logIsJSON = validateJSON(log)
             for prematchToDecoderFilename in prematchToDecoderFilenameList:
                 prematchType = list(prematchToDecoderFilename['prematch'].keys())[0]
+                decoderFilename = prematchToDecoderFilename['filename']
+                print(decoderFilename)
+                # decoderFilename = 
                 if prematchType == 'has_field' and logIsJSON:
                     print('HAS FIELD and IS JSON')
-
+                    existFields(log, prematchToDecoderFilename['prematch']['has_field'])
                 elif prematchType == 'regex' and not logIsJSON:
                     print('REGEX and IS NOT JSON')
                 else:
