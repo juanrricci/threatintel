@@ -4,12 +4,16 @@ meta:
   version: 0.0.0
   author: Wazuh Inc.
   date: '2021-02-04'
-prematch: {}
+prematch:
+  has_field: 
+    - win.system.providerName
+    - win.system.providerGUID
 options: {}
 mapping:
-  timestamp: {}
+  timestamp: win.eventdata.utcTime
   channel: {}
   hostname: {}
   event-id: {}
   severity: {}
   message: {}
+  full-log: {}

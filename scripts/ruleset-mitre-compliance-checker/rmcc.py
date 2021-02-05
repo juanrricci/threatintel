@@ -9,6 +9,8 @@ attack = Attck()
 
 # Get all the paths of the XML rule files from the ruleset folder
 rule_files = glob.glob('C:\\Users\\juarc\\Documents\\GitHub\\wazuh\\ruleset\\rules\\*.xml')
+print(rule_files)
+quit()
 
 ok_file_count = 0
 not_ok_file_count = 0

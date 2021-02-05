@@ -1,0 +1,39 @@
+---
+meta:
+  name: Windows Decoder
+  version: 0.0.0
+  author: Wazuh Inc.
+  date: '2021-02-04'
+prematch:
+  regex: 
+    - (\w\s\d+\s\d+:\d+:\d+)\s(\S+)\s(\S)[(\d+)]:
+options: {}
+mapping:
+  - (?P<date>\w\s\d+\s\d+:\d+:\d+)\s(?P<hostname>\S+)\s(?P<service>\S)[(?P<pid>\d+)]:\s(?P<user>\w+)
+  - field:
+    date: timestamp
+    hostname: source.hostname
+    service: process.serviceName
+    pid: process.pid
+    user: user.username
+  - (?P<date>\w\s\d+\s\d+:\d+:\d+)\s(?P<hostname>\S+)\s(?P<level>\S+)\s(?P<service>\S)[(?P<pid>\d+)]:\s(?P<user>\w+)  
+    - field:
+      date: timestamp
+      hostname: source.hostname
+      level: process.level
+      service: process.serviceName
+      pid: process.pid
+      user: user.username
+  - (?P<timestamp>\w\s\d+\s\d+:\d+:\d+)\s(?P<ip>\d+\.\d+\.\d+\.\d+)\s(?P<level>\S+)\s(?P<service>\S)[(?P<pid>\d+)]:\s(?P<user>\w+)  
+    - field:
+      - field
+        timestamp
+        date
+      - field
+        ip # campo original
+        source.ip # campo normalizado
+      - field
+        ip # campo original
+        source.hostname # campo normalizado
+        resolve # accion/funcion ip->hostname
+
