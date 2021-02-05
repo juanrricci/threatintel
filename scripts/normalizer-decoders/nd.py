@@ -4,6 +4,7 @@ from logDecoder import logDecode
 import glob
 import yaml
 import re
+from benedict import benedict
 
 def validateJSON(jsonData):
     try:
@@ -24,13 +25,18 @@ def parseAllDecoderFiles():
     # print(list(prematchToDecoderFilenameList[0]['prematch'].keys()))
     return prematchToDecoderFilenameList
 
-def existFields(log, prematchFields):
-    print('Log:', log)
+def existFields(jsonLog, prematchFields):
+    print('JSON Log:', jsonLog)
     for prematchField in prematchFields:
         print('Prematch field:', prematchField)
         p = re.compile('\w+')
         m = p.findall(prematchField)
         print('Groups:', m)
+        # return True if jsonLog[m[0]][m[1]][m[2]] else False
+        benedictedLog = benedict(jsonLog)
+        print('Do', prematchField, 'nested fields exist?')
+        print(True) if prematchField in benedictedLog else print(False)
+
 
 
 def main():
@@ -48,6 +54,7 @@ def main():
     with open('logs.log') as logs:
         for log in logs:
             logIsJSON = validateJSON(log)
+            jsonLog = json.loads(log) if logIsJSON else False
             for prematchToDecoderFilename in prematchToDecoderFilenameList:
                 prematchType = list(prematchToDecoderFilename['prematch'].keys())[0]
                 decoderFilename = prematchToDecoderFilename['filename']
@@ -55,7 +62,8 @@ def main():
                 # decoderFilename = 
                 if prematchType == 'has_field' and logIsJSON:
                     print('HAS FIELD and IS JSON')
-                    existFields(log, prematchToDecoderFilename['prematch']['has_field'])
+                    # print('Do fields exist?',existFields(jsonLog, prematchToDecoderFilename['prematch']['has_field']))
+                    existFields(jsonLog, prematchToDecoderFilename['prematch']['has_field'])
                 elif prematchType == 'regex' and not logIsJSON:
                     print('REGEX and IS NOT JSON')
                 else:

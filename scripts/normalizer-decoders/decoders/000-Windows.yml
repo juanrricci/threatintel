@@ -7,7 +7,7 @@ meta:
 prematch:
   has_field: 
     - win.system.providerName
-    - win.system.providerGUID
+    - win.system.providerGuid
 options: {}
 mapping:
   timestamp: win.eventdata.utcTime
