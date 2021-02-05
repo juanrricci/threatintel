@@ -41,6 +41,18 @@ def existFields(jsonLog, prematchFields):
         else: print('Prematch field', prematchField, 'found. OK.')
     return True
 
+def createJsonOutput(jsonLog, decoderFilename):
+    dictOutput = {}
+    with open(decoderFilename) as decoderFileOpened: 
+        benedictedLog = benedict(jsonLog)
+        decoderDict = yaml.load(decoderFileOpened, Loader=yaml.FullLoader)
+        for normalizedField in decoderDict['mapping']:
+            print(normalizedField, ':', decoderDict['mapping'][normalizedField])
+            print('Extracted field:', benedictedLog[decoderDict['mapping'][normalizedField]])
+            dictOutput[normalizedField] = benedictedLog[decoderDict['mapping'][normalizedField]]
+    with open('normalized_decodification.json', 'w') as normalizedDecodification:
+        json.dump(dictOutput, normalizedDecodification, indent = 4) 
+
 
 def main():
     prematchToDecoderFilenameList = parseAllDecoderFiles()
@@ -66,7 +78,8 @@ def main():
                 if prematchType == 'has_field' and logIsJSON:
                     print('HAS FIELD and IS JSON')
                     # print('Do fields exist?',existFields(jsonLog, prematchToDecoderFilename['prematch']['has_field']))
-                    print('existFields return:', existFields(jsonLog, prematchToDecoderFilename['prematch']['has_field']))
+                    if existFields(jsonLog, prematchToDecoderFilename['prematch']['has_field']):
+                        createJsonOutput(jsonLog, decoderFilename)
                 elif prematchType == 'regex' and not logIsJSON:
                     print('REGEX and IS NOT JSON')
                 else:

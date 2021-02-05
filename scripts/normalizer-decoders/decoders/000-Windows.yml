@@ -6,7 +6,7 @@ meta:
   date: '2021-02-04'
 prematch:
   has_field: 
-    - win.system.providerNamer
+    - win.system.providerName
     - win.system.providerGuid
 options: {}
 mapping:
@@ -15,5 +15,5 @@ mapping:
   hostname: win.system.computer
   event-id: win.system.eventID
   severity: win.system.severityValue
-  message: win.system.message
-  full-log: win.system.message
+  #message: win.system.message
+  #full-log: win.system.message
