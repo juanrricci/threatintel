@@ -42,16 +42,32 @@ def existFields(jsonLog, prematchFields):
     return True
 
 def createJsonOutput(jsonLog, decoderFilename):
-    dictOutput = {}
+    dictOutput = benedict()
     with open(decoderFilename) as decoderFileOpened: 
         benedictedLog = benedict(jsonLog)
         decoderDict = yaml.load(decoderFileOpened, Loader=yaml.FullLoader)
-        for normalizedField in decoderDict['mapping']:
-            print(normalizedField, ':', decoderDict['mapping'][normalizedField])
-            print('Extracted field:', benedictedLog[decoderDict['mapping'][normalizedField]])
-            dictOutput[normalizedField] = benedictedLog[decoderDict['mapping'][normalizedField]]
-    with open('normalized_decodification.json', 'w') as normalizedDecodification:
-        json.dump(dictOutput, normalizedDecodification, indent = 4) 
+        for event in decoderDict['events']:
+            print('EVENT:', event)
+            for processor in event['event']['processors']:  
+                print('PROCESSOR', processor)  
+                if 'set' in processor and processor['set'] == None:
+                    try:
+                        dictOutput[processor['destination']] = benedictedLog[processor['original']]
+                    except:
+                        continue
+                elif 'parse' in processor and processor['parse'] == None:
+                    try:     
+                        dictOutput[processor['destination']] = benedictedLog[processor['original']]
+                    except:
+                        continue
+                elif 'resolve' in processor and processor['resolve'] == None:
+                    try:   
+                        dictOutput[processor['destination']] = benedictedLog[processor['original']]
+                    except:
+                        continue
+    print(dictOutput)
+    with open('normalized_decodification2.json', 'w') as normalizedDecodification:
+        json.dump(dictOutput, normalizedDecodification, indent=4) 
 
 
 def main():

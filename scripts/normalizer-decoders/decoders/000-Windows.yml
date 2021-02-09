@@ -1,14 +1,20 @@
 ---
-meta:
-  name: Windows Decoder
-  version: 0.0.0
-  author: Wazuh Inc.
-  date: '2021-02-04'
+mapname:    windows events
+author:     wazuh threatintell team
+created:    2021-02-05
+updated:    2021-02-05
+
+
+vendor:     mswindows
+component:     sysmon
+
 prematch:
   has_field: 
     - win.system.providerName
     - win.system.providerGuid
-options: {}
+options: 
+    - geo:  yes
+
 mapping:
   timestamp: win.eventdata.utcTime
   channel: win.system.channel
@@ -17,3 +23,41 @@ mapping:
   severity: win.system.severityValue
   #message: win.system.message
   #full-log: win.system.message
+
+events:
+    - event: 
+        id:             "001"
+        description:    "Evento de reconocimiento"
+        processors: 
+            - set:          
+              original:     win.eventdata.utcTime
+              destination:  timestamp
+            - set:          
+              original:     win.system.channel
+              destination:  process.channel
+            - set:          
+              original:     win.system.computer
+              destination:  host.hostname
+            - set:          
+              original:     win.system.severityValue
+              destination:  event.severity          
+            - set:          
+              original:     win.eventdata.originalFileName
+              destination:  process.executable
+            - set:          
+              original:     win.eventdata.image
+              destination:  process.executable.prematch
+            - set:          
+              original:     win.system.eventID
+              destination:  event.id
+            - parse:        
+              original:     win.eventdata.hashes
+              destination:  process.executable.hash.md5
+              regex:        "MD5=([^,$]+)"
+            - parse:        
+              original:     win.eventdata.hashes
+              destination:  process.executable.hash.sha256
+              regex:        "SHA256=([^,$]+)"
+            - resolve:      
+              original:     win.agent.ip
+              destination:  source.hostname
