@@ -8,7 +8,8 @@ from src.normalizer import createJsonOutput
 
 
 def main():
-    prematchToDecoderFilenameList = parseAllDecoderFiles()
+    formatsOfDecoders = parseAllDecoderFiles()
+    print(formatsOfDecoders)
 
     # - Iterate over logs.
     # -- Iterate over decoders.
@@ -30,24 +31,24 @@ def main():
             try:
                 logType = getLogType(log)
                 print(logType)
-                # logIsJSON = isJSON(log)
-                # jsonLog = json.loads(log) if logIsJSON else False
-                # for prematchToDecoderFilename in prematchToDecoderFilenameList:
-                #     prematchType = list(prematchToDecoderFilename['prematch'].keys())[0]
-                #     decoderFilename = prematchToDecoderFilename['filename']
-                #     print(decoderFilename)
-                #     # decoderFilename = 
-                #     if prematchType == 'has_field' and logIsJSON:
-                #         print('HAS FIELD and IS JSON')
-                #         # print('Do fields exist?',existFields(jsonLog, prematchToDecoderFilename['prematch']['has_field']))
-                #         if existFields(jsonLog, prematchToDecoderFilename['prematch']['has_field']):
-                #             createJsonOutput(jsonLog, decoderFilename)
-                #     elif prematchType == 'regex' and not logIsJSON:
-                #         print('REGEX and IS NOT JSON')
-                #     else:
-                #         print('Exception:')
-                #         print('Prematch Type:', prematchType)
-                #         print('Log is JSON:', logIsJSON)
+                logIsJSON = isJSON(log)
+                jsonLog = json.loads(log) if logIsJSON else False
+                for prematchToDecoderFilename in prematchToDecoderFilenameList:
+                    prematchType = list(prematchToDecoderFilename['prematch'].keys())[0]
+                    decoderFilename = prematchToDecoderFilename['filename']
+                    print(decoderFilename)
+                    # decoderFilename = 
+                    if prematchType == 'has_field' and logIsJSON:
+                        print('HAS FIELD and IS JSON')
+                        # print('Do fields exist?',existFields(jsonLog, prematchToDecoderFilename['prematch']['has_field']))
+                        if existFields(jsonLog, prematchToDecoderFilename['prematch']['has_field']):
+                            createJsonOutput(jsonLog, decoderFilename)
+                    elif prematchType == 'regex' and not logIsJSON:
+                        print('REGEX and IS NOT JSON')
+                    else:
+                        print('Exception:')
+                        print('Prematch Type:', prematchType)
+                        print('Log is JSON:', logIsJSON)
             except:
                 print('Invalid log format')
                 continue
