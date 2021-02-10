@@ -6,7 +6,7 @@ updated:    2021-02-05
 
 
 vendor:     mswindows
-component:     sysmon
+component:  sysmon
 
 prematch:
   has_field: 
@@ -16,7 +16,7 @@ options:
     - geo:  yes
 
 mapping:
-  timestamp: win.eventdata.utcTime
+  sender.id: win.eventdata.utcTime
   channel: win.system.channel
   hostname: win.system.computer
   event-id: win.system.eventID
@@ -32,6 +32,9 @@ events:
             - set:          
               original:     win.eventdata.utcTime
               destination:  timestamp
+            - set:          
+              original:     agent.id
+              destination:  sender.id
             - set:          
               original:     win.system.channel
               destination:  process.channel
@@ -53,11 +56,15 @@ events:
             - parse:        
               original:     win.eventdata.hashes
               destination:  process.executable.hash.md5
-              regex:        "MD5=([^,$]+)"
+              regex:        MD5=(?P<md5>[^,]+)
             - parse:        
               original:     win.eventdata.hashes
               destination:  process.executable.hash.sha256
-              regex:        "SHA256=([^,$]+)"
+              regex:        SHA256=(?P<sha256>[^,]+)
+            - parse:        
+              original:     win.eventdata.hashes
+              destination:  process.executable.hash.sha1
+              regex:        SHA1=(?P<sha1>[^,]+)              
             - resolve:      
               original:     win.agent.ip
               destination:  source.hostname

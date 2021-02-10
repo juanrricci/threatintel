@@ -56,8 +56,12 @@ def createJsonOutput(jsonLog, decoderFilename):
                     except:
                         continue
                 elif 'parse' in processor and processor['parse'] == None:
-                    try:     
-                        dictOutput[processor['destination']] = benedictedLog[processor['original']]
+                    try:
+                        # print('benedicted original:', benedictedLog[processor['original']])
+                        m = re.search(processor['regex'], benedictedLog[processor['original']])
+                        print('m:', m.groups())
+                        n = re.search('\.(?P<hash>\w+)$', processor['destination'])
+                        dictOutput[processor['destination']] = m.group(n.group('hash'))
                     except:
                         continue
                 elif 'resolve' in processor and processor['resolve'] == None:
