@@ -1,3 +1,4 @@
+import json
 import yaml
 import re
 
@@ -32,5 +33,5 @@ def createJsonOutput(jsonLog, decoderFilename):
                     except:
                         continue
     print(dictOutput)
-    with open('normalized_decodification2.json', 'w') as normalizedDecodification:
+    with open('output/normalized_decodification2.json', 'w') as normalizedDecodification:
         json.dump(dictOutput, normalizedDecodification, indent=4) 
