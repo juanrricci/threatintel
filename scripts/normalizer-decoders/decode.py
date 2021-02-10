@@ -1,6 +1,6 @@
 import json
 
-from src.logTypeSolver import getLogType
+from src.predecoder import predecode
 from src.validateJSON import isJSON
 from src.decoderGather import parseAllDecoderFiles
 from src.logDecoderTypesMatch import existFields
@@ -29,7 +29,7 @@ def main():
             # case 4:
             #       es un JSON? -> valida
             try:
-                logType = getLogType(log)
+                logType = predecode(log)
                 print(logType)
                 logIsJSON = isJSON(log)
                 jsonLog = json.loads(log) if logIsJSON else False
