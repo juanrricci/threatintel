@@ -12,17 +12,10 @@ prematch:
   has_field: 
     - win.system.providerName
     - win.system.providerGuid
+    
 options: 
     - geo:  yes
-
-mapping:
-  sender.id: win.eventdata.utcTime
-  channel: win.system.channel
-  hostname: win.system.computer
-  event-id: win.system.eventID
-  severity: win.system.severityValue
-  #message: win.system.message
-  #full-log: win.system.message
+    - force: yes
 
 events:
     - event: 
