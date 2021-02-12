@@ -1,14 +1,14 @@
 import json
 from pprint import pprint
 
+from src.fetchDecoders import fetchDecoders
 from src.predecode import predecode
 from src.prematch import prematch
 from src.decode import decode
-from src.gatherDecoderFiles import gatherDecoderFiles
 
 
 def main():
-    decodersByFormat = gatherDecoderFiles()
+    decodersByFormat = fetchDecoders()
     print('Format of decoders:\n')
     pprint(decodersByFormat)
 
