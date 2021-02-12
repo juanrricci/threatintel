@@ -1,6 +1,7 @@
 import json
 
 from src.predecoder import predecode
+from src.decoder import decode
 from src.validateJSON import isJSON
 from src.decoderGather import parseAllDecoderFiles
 from src.logDecoderTypesMatch import existFields
@@ -8,8 +9,8 @@ from src.normalizer import createJsonOutput
 
 
 def main():
-    formatsOfDecoders = parseAllDecoderFiles()
-    print(formatsOfDecoders)
+    decodersByFormat = parseAllDecoderFiles()
+    print('Format of decoders:', decodersByFormat)
 
     # - Iterate over logs.
     # -- Iterate over decoders.
@@ -29,26 +30,29 @@ def main():
             # case 4:
             #       es un JSON? -> valida
             try:
-                logType = predecode(log)
-                print(logType)
-                logIsJSON = isJSON(log)
-                jsonLog = json.loads(log) if logIsJSON else False
-                for prematchToDecoderFilename in prematchToDecoderFilenameList:
-                    prematchType = list(prematchToDecoderFilename['prematch'].keys())[0]
-                    decoderFilename = prematchToDecoderFilename['filename']
-                    print(decoderFilename)
-                    # decoderFilename = 
-                    if prematchType == 'has_field' and logIsJSON:
-                        print('HAS FIELD and IS JSON')
-                        # print('Do fields exist?',existFields(jsonLog, prematchToDecoderFilename['prematch']['has_field']))
-                        if existFields(jsonLog, prematchToDecoderFilename['prematch']['has_field']):
-                            createJsonOutput(jsonLog, decoderFilename)
-                    elif prematchType == 'regex' and not logIsJSON:
-                        print('REGEX and IS NOT JSON')
-                    else:
-                        print('Exception:')
-                        print('Prematch Type:', prematchType)
-                        print('Log is JSON:', logIsJSON)
+            # if True:
+                predecodedLog = predecode(log)
+                print('\nVuelve del predecoder:', predecodedLog)
+
+                decode(predecodedLog, decodersByFormat)
+            #     logIsJSON = isJSON(log)
+            #     jsonLog = json.loads(log) if logIsJSON else False
+            #     for prematchToDecoderFilename in prematchToDecoderFilenameList:
+            #         prematchType = list(prematchToDecoderFilename['prematch'].keys())[0]
+            #         decoderFilename = prematchToDecoderFilename['filename']
+            #         print(decoderFilename)
+            #         # decoderFilename = 
+            #         if prematchType == 'has_field' and logIsJSON:
+            #             print('HAS FIELD and IS JSON')
+            #             # print('Do fields exist?',existFields(jsonLog, prematchToDecoderFilename['prematch']['has_field']))
+            #             if existFields(jsonLog, prematchToDecoderFilename['prematch']['has_field']):
+            #                 createJsonOutput(jsonLog, decoderFilename)
+            #         elif prematchType == 'regex' and not logIsJSON:
+            #             print('REGEX and IS NOT JSON')
+            #         else:
+            #             print('Exception:')
+            #             print('Prematch Type:', prematchType)
+            #             print('Log is JSON:', logIsJSON)
             except:
                 print('Invalid log format')
                 continue
