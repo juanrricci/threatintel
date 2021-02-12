@@ -28,28 +28,25 @@ def main():
             try:
                 # Read logs are predecoded for extracting context information.
                 predecodedLog = predecode(log)
-                print('\nVuelve del predecoder:')
+                print('\nPredecoded log:')
                 pprint(predecodedLog)
 
                 # Predecoded logs are prematched for finding the right decoder.
                 chosenDecoderFilename = prematch(predecodedLog, decodersByFormat)
                 print('\nPrematch result:', chosenDecoderFilename)
 
-                fullDecodedLog = predecodedLog.copy()
-
-                # decodedEvent = decode(predecodedLog, chosenDecoderFilename)
-                # decodedlog = fullDecodedLog + decodedEvent
                 # Once the right decoder is found, the log information is decoded
                 # and stored in normalized fields.
-                fullDecodedLog = decode(predecodedLog, chosenDecoderFilename)
-                pprint(fullDecodedLog)
+                decodedLog = decode(predecodedLog, chosenDecoderFilename)
+                print('\nDecoded log:')
+                pprint(decodedLog)
 
                 # The decoded log is written in JSON format to an output file
-                with open('output/normalized_decodification4.json', 'w') as normalizedDecodification:
-                    json.dump(fullDecodedLog, normalizedDecodification, indent=4)
+                with open('output/events.json', 'w') as events:
+                    json.dump(decodedLog, events, indent=4)
 
             except:
-                print('\nINVALID LOG FORMAT')
+                print('\nInvalid log format.')
                 continue
 
 if __name__ == '__main__':

@@ -1,15 +1,22 @@
+import json
 import yaml
 import re
 from benedict import benedict
 from pprint import pprint
 
 def decode(predecodedLog, chosenDecoderFilename):
-    dictOutput = benedict()
-    dictOutput['agent'] = predecodedLog['agent']
+    decodedLog = benedict()
+    decodedLog['agent'] = predecodedLog['agent']
+    decodedLog['event.original'] = predecodedLog['log']['raw']
 
     with open(chosenDecoderFilename) as decoderFileOpened: 
         benedictedLog = benedict(predecodedLog['log']['raw'])
         decoderDict = yaml.load(decoderFileOpened, Loader=yaml.FullLoader)
+
+        # decodedLog[decoderDict['vendor']][decoderDict['component']] = json.loads(predecodedLog['log']['raw'])
+        rawToJSON = json.loads(predecodedLog['log']['raw'])
+        decodedLog[decoderDict['vendor']] = {}
+        decodedLog[decoderDict['vendor']][decoderDict['component']] = rawToJSON
 
         for event in decoderDict['events']:
             # print('\nEVENT:')
@@ -20,7 +27,7 @@ def decode(predecodedLog, chosenDecoderFilename):
 
                 if 'set' in processor and processor['set'] == None:
                     try:
-                        dictOutput[processor['destination']] = benedictedLog[processor['original']]
+                        decodedLog[processor['destination']] = benedictedLog[processor['original']]
                     except:
                         continue
 
@@ -30,17 +37,14 @@ def decode(predecodedLog, chosenDecoderFilename):
                         m = re.search(processor['regex'], benedictedLog[processor['original']])
                         # print('m:', m.groups())
                         n = re.search('\.(?P<hash>\w+)$', processor['destination'])
-                        dictOutput[processor['destination']] = m.group(n.group('hash'))
+                        decodedLog[processor['destination']] = m.group(n.group('hash'))
                     except:
                         continue
 
                 elif 'resolve' in processor and processor['resolve'] == None:
                     try:   
-                        dictOutput[processor['destination']] = benedictedLog[processor['original']]
+                        decodedLog[processor['destination']] = benedictedLog[processor['original']]
                     except:
                         continue
-    
-    return dictOutput
 
-    # with open('output/normalized_decodification2.json', 'w') as normalizedDecodification:
-    #     json.dump(dictOutput, normalizedDecodification, indent=4) 
+    return decodedLog

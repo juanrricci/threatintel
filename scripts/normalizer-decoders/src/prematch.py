@@ -3,13 +3,13 @@ from pprint import pprint
 
 def checkFields(benedictedLog, decoderFields):
     for field in decoderFields:
-        print('\n-- Checking field', field)
+        print('-- Checking field', field)
         if not field in benedictedLog:
-            print('\n--- Field', field, 'is invalid. Decoder invalid too.')
+            print('* Field', field, 'is invalid. Decoder invalid too.')
             return False
         else:
-            print('\n--- Field', field, 'is valid. Checking the following one...')
-    print('\n- All fields are valid. Matched decoder.')
+            print('--- Field', field, 'is valid. Checking the following one...')
+    print('* All fields are valid. Matched decoder.')
     return True
 
 def checkMatchedDecoders(rawLog, matchedDecoders):
@@ -23,7 +23,6 @@ def checkMatchedDecoders(rawLog, matchedDecoders):
     return False
 
 def prematch(predecodedLog, decodersByFormat):
-    matchedDecoders = decodersByFormat[predecodedLog['log']['type']]
     print('\nMatched JSON Decoders:') 
-    pprint(matchedDecoders)
+    pprint(decodersByFormat[predecodedLog['log']['type']])
     return checkMatchedDecoders(predecodedLog['log']['raw'], decodersByFormat[predecodedLog['log']['type']])
