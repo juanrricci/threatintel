@@ -1,7 +1,7 @@
 import glob
 import yaml
 
-def parseAllDecoderFiles():
+def gatherDecoderFiles():
     decoderFiles = glob.glob('decoders/*.yml')
     formatsOfDecoders = {"json": [], "plaintext": [], "xml": []}
     for decoderFile in decoderFiles:
