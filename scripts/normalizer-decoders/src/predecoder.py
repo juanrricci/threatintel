@@ -21,9 +21,9 @@ def predecode(log):
     try:
     # if True:
         m = re.search('^(?P<log_type>\d):\[(?P<agent_id>\d+)\] \((?P<agent_name>[\w-]+)\) (?P<agent_ip>\d+\.\d+\.\d+\.\d+):(?P<agent_port>\d+):(?P<agent_location>[\/\w-]+):(?P<raw_log>.+)', log)
-        print('\nGROUPS:', m.groups())
-        print('\nlog_type:', m.group('log_type'))
-        print('\nagent_id:', m.group('agent_id'))
+        # print('\nGROUPS:', m.groups())
+        # print('\nlog_type:', m.group('log_type'))
+        # print('\nagent_id:', m.group('agent_id'))
         predecoding = {
             'agent': {
                 'id': m.group('agent_id'),

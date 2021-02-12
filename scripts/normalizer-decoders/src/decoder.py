@@ -1,27 +1,45 @@
+import yaml
+import re
 from benedict import benedict
+from pprint import pprint
 
-def checkFields(benedictedLog, decoderFields):
-    for field in decoderFields:
-        print('\nChecking field', field)
-        if not field in benedictedLog:
-            print('\nField', field, 'is invalid. Decoder invalid too.')
-            return False
-        else:
-            print('\nField', field, 'is valid. Checking the following one...')
-    print('\nAll fields are valid. Matched decoder.')
-    return True
+def decode(predecodedLog, chosenDecoderFilename):
+    dictOutput = benedict()
 
-def checkMatchedDecoders(rawLog, matchedDecoders):
-    benedictedLog = benedict(rawLog)
-    for decoder in matchedDecoders:
-        print('\nChecking decoder', decoder['filename'])
-        if checkFields(benedictedLog, decoder['prematch']['has_field']):
-            print('\nMatched decoder:', decoder['filename'])
-            return decoder['filename']
-    print('\nNone of listed decoders have matched.')
-    return False
+    with open(chosenDecoderFilename) as decoderFileOpened: 
+        benedictedLog = benedict(predecodedLog['log']['raw'])
+        decoderDict = yaml.load(decoderFileOpened, Loader=yaml.FullLoader)
 
-def decode(predecodedLog, decodersByFormat):
-    matchedDecoders = decodersByFormat[predecodedLog['log']['type']]
-    print('\nMatched JSON Decoders:', matchedDecoders)
-    print('\nPrematch result:', checkMatchedDecoders(predecodedLog['log']['raw'], decodersByFormat[predecodedLog['log']['type']]))
+        for event in decoderDict['events']:
+            # print('\nEVENT:')
+            # pprint(event)
+
+            for processor in event['event']['processors']:  
+                # print('PROCESSOR', processor)  
+
+                if 'set' in processor and processor['set'] == None:
+                    try:
+                        dictOutput[processor['destination']] = benedictedLog[processor['original']]
+                    except:
+                        continue
+
+                elif 'parse' in processor and processor['parse'] == None:
+                    try:
+                        # print('benedicted original:', benedictedLog[processor['original']])
+                        m = re.search(processor['regex'], benedictedLog[processor['original']])
+                        # print('m:', m.groups())
+                        n = re.search('\.(?P<hash>\w+)$', processor['destination'])
+                        dictOutput[processor['destination']] = m.group(n.group('hash'))
+                    except:
+                        continue
+
+                elif 'resolve' in processor and processor['resolve'] == None:
+                    try:   
+                        dictOutput[processor['destination']] = benedictedLog[processor['original']]
+                    except:
+                        continue
+    
+    return dictOutput
+
+    # with open('output/normalized_decodification2.json', 'w') as normalizedDecodification:
+    #     json.dump(dictOutput, normalizedDecodification, indent=4) 

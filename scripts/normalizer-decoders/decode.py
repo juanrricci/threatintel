@@ -1,6 +1,8 @@
 import json
+from pprint import pprint
 
 from src.predecoder import predecode
+from src.prematcher import prematch
 from src.decoder import decode
 from src.validateJSON import isJSON
 from src.decoderGather import parseAllDecoderFiles
@@ -10,7 +12,8 @@ from src.normalizer import createJsonOutput
 
 def main():
     decodersByFormat = parseAllDecoderFiles()
-    print('Format of decoders:', decodersByFormat)
+    print('Format of decoders:\n')
+    pprint(decodersByFormat)
 
     # - Iterate over logs.
     # -- Iterate over decoders.
@@ -22,7 +25,10 @@ def main():
     # ----- If True: decode.
 
     with open('logs.log') as logs:
+        logNumber = 0
         for log in logs:
+            logNumber += 1
+            print('\n** LOG NUMERO', logNumber , '**')
             # parseo de la linea de log, tiene que sacar id del tipo de log y datos del agente, y el log propiamente
             # case 1:
             #       es un JSON -> linea 95
@@ -32,9 +38,19 @@ def main():
             try:
             # if True:
                 predecodedLog = predecode(log)
-                print('\nVuelve del predecoder:', predecodedLog)
+                print('\nVuelve del predecoder:')
+                pprint(predecodedLog)
 
-                decode(predecodedLog, decodersByFormat)
+                chosenDecoderFilename = prematch(predecodedLog, decodersByFormat)
+                print('\nPrematch result:', chosenDecoderFilename)
+
+                fullDecodedLog = predecodedLog.copy()
+
+                fullDecodedLog['event'] = decode(predecodedLog, chosenDecoderFilename)
+                
+                pprint(fullDecodedLog)
+                with open('output/normalized_decodification4.json', 'w') as normalizedDecodification:
+                    json.dump(fullDecodedLog, normalizedDecodification, indent=4)
             #     logIsJSON = isJSON(log)
             #     jsonLog = json.loads(log) if logIsJSON else False
             #     for prematchToDecoderFilename in prematchToDecoderFilenameList:
@@ -54,7 +70,7 @@ def main():
             #             print('Prematch Type:', prematchType)
             #             print('Log is JSON:', logIsJSON)
             except:
-                print('Invalid log format')
+                print('\nINVALID LOG FORMAT')
                 continue
 
 if __name__ == '__main__':
