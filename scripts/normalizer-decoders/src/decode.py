@@ -5,6 +5,7 @@ from pprint import pprint
 
 def decode(predecodedLog, chosenDecoderFilename):
     dictOutput = benedict()
+    dictOutput['agent'] = predecodedLog['agent']
 
     with open(chosenDecoderFilename) as decoderFileOpened: 
         benedictedLog = benedict(predecodedLog['log']['raw'])
