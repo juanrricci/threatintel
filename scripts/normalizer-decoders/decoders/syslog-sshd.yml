@@ -1,0 +1,32 @@
+---
+
+mapname:    syslog ssh events
+author:     wazuh threatintell team
+created:    2021-02-05
+updated:    2021-02-05
+
+
+vendor:     syslog
+component:  sshd
+format:     plaintext
+reference:  www.example.com
+
+prematch:
+    - regex: '^\w+\s+\d+\s+\d+:\d+:\d+\s+\S+\s+\sshd\[\d+\]:'
+
+options:
+  - geo:  yes
+
+events:
+    - event: 
+        id:             "001"
+        description:    "Invalid user"
+        procesors: 
+              - regex:    '^(?P<timestamp>\w+\s+\d+\s+\d+:\d+:\d+)\s+(?P<destination.hostname>\S+)\s+\(?P<process.name>sshd)\[(?P<process.pid>\d+\]: Invalid user (?P<user.name>\S+)\s+from\s+(?P<source.ip>\S+)\s+port\s+(?P<soruce.port>\S+)'
+              - resolve: 
+                original: source.ip
+                destination: source.hostname
+              - geo:
+                original: source.ip
+              - geo: 
+                original: destination.hostname

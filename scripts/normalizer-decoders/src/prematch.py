@@ -13,21 +13,19 @@ def checkFields(benedictedLog, decoderFields):
     return True
 
 def checkJSONDecoders(rawLog, matchedDecoders):
-    try:
-        benedictedLog = benedict(rawLog)
-        for decoder in matchedDecoders:
-            print('\n* Checking decoder', decoder['filename'])
-            if checkFields(benedictedLog, decoder['prematch']['has_field']):
-                print('\nMatched decoder:', decoder['filename'])
-                return decoder['filename']
-        print('\n* None of listed decoders have matched.')
-        return False
-    except:
-        print('\nNot a "benedictable" log')
+    benedictedLog = benedict(rawLog)
+    for decoder in matchedDecoders:
+        print('\n* Checking decoder', decoder['filename'])
+        if checkFields(benedictedLog, decoder['prematch']['has_field']):
+            print('\nMatched decoder:', decoder['filename'])
+            return decoder['filename']
+    print('\n* None of listed decoders have matched.')
+    return False
 
 def checkPlaintextDecoders(rawLog, matchedDecoders):
     print('Plaintext decoders must be checked here.')
     print(matchedDecoders)
+    print(rawLog)
 
 def checkXMLDecoders(rawLog, matchedDecoders):
     print('XML decoders must be checked here.')
