@@ -12,7 +12,8 @@ format:     plaintext
 reference:  www.example.com
 
 prematch:
-    - regex: '^\w+\s+\d+\s+\d+:\d+:\d+\s+\S+\s+\sshd\[\d+\]:'
+  regex: 
+    - '^\w+\s+\d+\s+\d+:\d+:\d+\s+\S+\s+sshd\[\d+\]:'
 
 options:
   - geo:  yes
