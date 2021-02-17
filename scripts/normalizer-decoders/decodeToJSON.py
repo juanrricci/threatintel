@@ -24,8 +24,8 @@ def main():
         for log in logs:
             logNumber += 1
             print('\n** LOG #', logNumber , '**')
-
-            try:
+            if True:
+            # try:
                 # Read logs are predecoded for extracting context information.
                 predecodedLog = predecode(log)
                 print('\nPredecoded log:')
@@ -45,9 +45,9 @@ def main():
                 with open('output/events.json', 'w') as events:
                     json.dump(decodedLog, events, indent=4)
 
-            except:
-                print('\nInvalid log format.')
-                continue
+            # except:
+            #     print('\nInvalid log format.')
+            #     continue
 
 if __name__ == '__main__':
     main()

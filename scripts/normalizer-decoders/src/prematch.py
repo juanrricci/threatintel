@@ -12,17 +12,35 @@ def checkFields(benedictedLog, decoderFields):
     print('* All fields are valid. Matched decoder.')
     return True
 
-def checkMatchedDecoders(rawLog, matchedDecoders):
-    benedictedLog = benedict(rawLog)
-    for decoder in matchedDecoders:
-        print('\n* Checking decoder', decoder['filename'])
-        if checkFields(benedictedLog, decoder['prematch']['has_field']):
-            print('\nMatched decoder:', decoder['filename'])
-            return decoder['filename']
-    print('\n* None of listed decoders have matched.')
-    return False
+def checkJSONDecoders(rawLog, matchedDecoders):
+    try:
+        benedictedLog = benedict(rawLog)
+        for decoder in matchedDecoders:
+            print('\n* Checking decoder', decoder['filename'])
+            if checkFields(benedictedLog, decoder['prematch']['has_field']):
+                print('\nMatched decoder:', decoder['filename'])
+                return decoder['filename']
+        print('\n* None of listed decoders have matched.')
+        return False
+    except:
+        print('\nNot a "benedictable" log')
+
+def checkPlaintextDecoders(rawLog, matchedDecoders):
+    print('Plaintext decoders must be checked here.')
+    print(matchedDecoders)
+
+def checkXMLDecoders(rawLog, matchedDecoders):
+    print('XML decoders must be checked here.')
 
 def prematch(predecodedLog, decodersByFormat):
     print('\nMatched JSON Decoders:') 
     pprint(decodersByFormat[predecodedLog['log']['type']])
-    return checkMatchedDecoders(predecodedLog['log']['raw'], decodersByFormat[predecodedLog['log']['type']])
+    formatsOfDecoders = {
+        'json': checkJSONDecoders,
+        'plaintext': checkPlaintextDecoders,
+        'xml': checkXMLDecoders
+    }
+
+    return formatsOfDecoders.get(predecodedLog['log']['type'], 'Invalid log type')(predecodedLog['log']['raw'], decodersByFormat[predecodedLog['log']['type']])
+    # return formatsOfDecoders.get(decodersByFormat[predecodedLog['log']['type']], 'Invalid log type')(predecodedLog['log']['raw'], decodersByFormat[predecodedLog['log']['type']])
+    # return checkJSONDecoders(predecodedLog['log']['raw'], decodersByFormat[predecodedLog['log']['type']])
