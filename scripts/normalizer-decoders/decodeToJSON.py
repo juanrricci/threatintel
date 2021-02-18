@@ -24,8 +24,9 @@ def main():
         for log in logs:
             logNumber += 1
             print('\n** LOG #', logNumber , '**')
-            if True:
-            # try:
+            print('\nLog:', log)
+            # if True:
+            try:
                 # Read logs are predecoded for extracting context information.
                 predecodedLog = predecode(log)
                 print('\nPredecoded log:')
@@ -37,19 +38,23 @@ def main():
 
                 # Once the right decoder is found, the log information is decoded
                 # and stored in normalized fields.
-                decodedLog = decode(predecodedLog, chosenDecoderFilename)
-                print('\nDecoded log:')
-                pprint(decodedLog)
+                if chosenDecoderFilename:
+                    decodedLog = decode(predecodedLog, chosenDecoderFilename)
+                    print('\nDecoded log:')
+                    pprint(decodedLog)
 
-                # The decoded log is written in JSON format to an output file
-                with open('output/events.json', 'a') as events:
-                    json.dump(decodedLog, events, indent=4)
-                    # json.dump(decodedLog, events)
-                    events.write('\n')
+                    # The decoded log is written in JSON format to an output file
+                    with open('output/events.json', 'a') as events:
+                        # json.dump(decodedLog, events, indent=4)
+                        json.dump(decodedLog, events)
+                        events.write('\n')
 
-            # except:
-            #     print('\nInvalid log format.')
-            #     continue
+                else:
+                    print('\n** Not matched decoder. Log skipped. **')
+
+            except:
+                print('\nInvalid log format.')
+                continue
 
 if __name__ == '__main__':
     main()
