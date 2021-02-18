@@ -22,12 +22,30 @@ events:
     - event: 
         id:             "001"
         description:    "Invalid user"
-        procesors: 
-              - regex:    '^(?P<timestamp>\w+\s+\d+\s+\d+:\d+:\d+)\s+(?P<destination.hostname>\S+)\s+\(?P<process.name>sshd)\[(?P<process.pid>\d+\]: Invalid user (?P<user.name>\S+)\s+from\s+(?P<source.ip>\S+)\s+port\s+(?P<soruce.port>\S+)'
+        processors: 
+              - regex:    '^(?P<timestamp>\w+\s+\d+\s+\d+:\d+:\d+)\s+(?P<destination_hostname>\S+)\s+(?P<process_name>sshd)\[(?P<process_pid>\d+)\]: Invalid user (?P<user_name>\S+)\s+from\s+(?P<source_ip>\S+)\s+port\s+(?P<source_port>\S+)'
               - resolve: 
-                original: source.ip
+                original: destination_hostname
+                destination: destination.hostname
+              - resolve: 
+                original: source_ip
                 destination: source.hostname
+              - resolve: 
+                original: process_name
+                destination: process.name
+              - resolve: 
+                original: process_pid
+                destination: process.pid
+              - resolve: 
+                original: source_ip
+                destination: source.hostname
+              - resolve: 
+                original: user_name
+                destination: user.name
+              - resolve: 
+                original: source_port
+                destination: source.port                                                                
               - geo:
-                original: source.ip
+                original: source_ip
               - geo: 
-                original: destination.hostname
+                original: destination_hostname

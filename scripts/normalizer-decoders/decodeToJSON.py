@@ -42,8 +42,10 @@ def main():
                 pprint(decodedLog)
 
                 # The decoded log is written in JSON format to an output file
-                with open('output/events.json', 'w') as events:
+                with open('output/events.json', 'a') as events:
                     json.dump(decodedLog, events, indent=4)
+                    # json.dump(decodedLog, events)
+                    events.write('\n')
 
             # except:
             #     print('\nInvalid log format.')

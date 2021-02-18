@@ -4,7 +4,8 @@ import re
 from benedict import benedict
 from pprint import pprint
 
-def decode(predecodedLog, chosenDecoderFilename):
+
+def decodeJSON(predecodedLog, chosenDecoderFilename):
     decodedLog = benedict()
     decodedLog['agent'] = predecodedLog['agent']
     decodedLog['event.original'] = predecodedLog['log']['raw']
@@ -48,3 +49,49 @@ def decode(predecodedLog, chosenDecoderFilename):
                         continue
 
     return decodedLog
+
+
+def decodePlaintext(predecodedLog, chosenDecoderFilename):
+    decodedLog = benedict()
+    decodedLog['agent'] = predecodedLog['agent']
+    decodedLog['event.original'] = predecodedLog['log']['raw']
+
+    with open(chosenDecoderFilename) as decoderFileOpened: 
+        # benedictedLog = benedict(predecodedLog['log']['raw'])
+        decoderDict = yaml.load(decoderFileOpened, Loader=yaml.FullLoader)
+
+        # decodedLog[decoderDict['vendor']][decoderDict['component']] = json.loads(predecodedLog['log']['raw'])
+        # rawToJSON = json.loads(predecodedLog['log']['raw'])
+        decodedLog[decoderDict['vendor']] = {}
+        decodedLog[decoderDict['vendor']][decoderDict['component']] = predecodedLog['log']['raw']
+
+        for event in decoderDict['events']:
+            # print('\nEVENT:')
+            # pprint(event)
+            regex_groups = {}
+            for processor in event['event']['processors']:  
+                # print('PROCESSOR', processor)  
+
+                if 'regex' in processor:
+                    regex_groups = re.match(processor['regex'], predecodedLog['log']['raw'])
+
+                elif 'resolve' in processor and processor['resolve'] == None:
+                    try:
+                        decodedLog[processor['destination']] = regex_groups.group(processor['original'])
+                    except:
+                        continue
+
+    return decodedLog
+
+
+def decodeXML(predecodedLog, chosenDecoderFilename):
+    return True
+
+def decode(predecodedLog, chosenDecoderFilename):
+    decoderType = {
+        'json': decodeJSON,
+        'plaintext': decodePlaintext,
+        'xml': decodeXML
+    }
+
+    return decoderType.get(predecodedLog['log']['type'], 'Invalid log type')(predecodedLog, chosenDecoderFilename)

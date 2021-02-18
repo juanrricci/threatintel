@@ -9,8 +9,8 @@ attack = Attck()
 
 # Get all the paths of the XML rule files from the ruleset folder
 rule_files = glob.glob('C:\\Users\\juarc\\Documents\\GitHub\\wazuh\\ruleset\\rules\\*.xml')
-print(rule_files)
-quit()
+# print(rule_files)
+# quit()
 
 ok_file_count = 0
 not_ok_file_count = 0
@@ -78,7 +78,7 @@ single_technique = '{"techniqueID": "T1098","score": 1,"color": "#e60d0d","comme
 
 single_technique_dict = json.loads(single_technique)
 
-with open('../technique-skeleton.json') as technique_skeleton_file:
+with open('./src/technique-skeleton.json') as technique_skeleton_file:
     technique_skeleton = json.load(technique_skeleton_file)
 
     for technique_id in mitre_id_set_sorted:
