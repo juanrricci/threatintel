@@ -1,0 +1,13 @@
+{
+    "2301": {
+        "ruleDescription": "xinetd: Excessive number connections to a service.",
+        "mitre": [
+            {
+                "tacticID": "TA0040",
+                "tactic": "Impact",
+                "techniqueID": "T1499.001",
+                "technique": "Endpoint Denial of Service: OS Exhaustion Flood"
+            }
+        ]
+    }
+}

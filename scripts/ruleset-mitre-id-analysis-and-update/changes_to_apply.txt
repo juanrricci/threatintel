@@ -1,0 +1,80 @@
+MITRE IDs actuales en regla 2301 - xinetd: Excessive number connections to a service.
+[
+  {
+    "tacticID": "",
+    "tactic": "",
+    "techniqueID": "T1499",
+    "technique": ""
+  }
+]
+--------------
+MITRE IDs a aplicar en regla 2301 - xinetd: Excessive number connections to a service.
+[
+  {
+    "tacticID": "TA0040",
+    "tactic": "Impact",
+    "techniqueID": "T1499.001",
+    "technique": "Endpoint Denial of Service: OS Exhaustion Flood"
+  }
+]
+**************
+MITRE IDs actuales en regla 2301 - xinetd: Excessive number connections to a service.
+[
+  {
+    "tacticID": "",
+    "tactic": "",
+    "techniqueID": "T1499",
+    "technique": ""
+  }
+]
+--------------
+MITRE IDs a aplicar en regla 2301 - xinetd: Excessive number connections to a service.
+[
+  {
+    "tacticID": "TA0040",
+    "tactic": "Impact",
+    "techniqueID": "T1499.001",
+    "technique": "Endpoint Denial of Service: OS Exhaustion Flood"
+  }
+]
+**************
+MITRE IDs actuales en regla 2301 - xinetd: Excessive number connections to a service.
+[
+  {
+    "tacticID": "",
+    "tactic": "",
+    "techniqueID": "T1499",
+    "technique": ""
+  }
+]
+--------------
+MITRE IDs a aplicar en regla 2301 - xinetd: Excessive number connections to a service.
+[
+  {
+    "tacticID": "TA0040",
+    "tactic": "Impact",
+    "techniqueID": "T1499.001",
+    "technique": "Endpoint Denial of Service: OS Exhaustion Flood"
+  }
+]
+**************
+MITRE IDs actuales en regla 2301 - xinetd: Excessive number connections to a service.
+[
+  {
+    "tacticID": "",
+    "tactic": "",
+    "techniqueID": "T1499",
+    "technique": ""
+  }
+]
+--------------
+MITRE IDs a aplicar en regla 2301 - xinetd: Excessive number connections to a service.
+[
+  {
+    "tacticID": "TA0040",
+    "tactic": "Impact",
+    "techniqueID": "T1499.001",
+    "technique": "Endpoint Denial of Service: OS Exhaustion Flood"
+  }
+]
+**************

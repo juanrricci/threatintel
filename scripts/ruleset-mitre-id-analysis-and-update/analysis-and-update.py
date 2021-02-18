@@ -22,7 +22,7 @@ class CommentedTreeBuilder(ElementTree.TreeBuilder):
         self.end(ElementTree.Comment)
 
 # Get all the paths of the XML rule files from the ruleset folder
-rule_files = glob.glob('C:\\Users\\juarc\\Documents\\GitHub\\wazuh\\ruleset\\rules\\*.xml')
+rule_files = glob.glob('/home/osbees/Projects/wazuh/ruleset/rules/*.xml')
 
 current_ruleset_mitre_status = {}
 
@@ -64,7 +64,7 @@ for rule_file in rule_files:
             for group in ruleset:
                 for rule in group:
                     try:
-                        # print('Chequeando rule:', rule.attrib['id'])
+                        #print('Chequeando rule:', rule.attrib['id'])
                         if rule.attrib['id'] in rule_id_list:
                             print('Regla', rule.attrib['id'], 'encontrada en', os.path.basename(rule_file))
                             current_ruleset_mitre_status[rule.attrib['id']] = {
@@ -72,11 +72,11 @@ for rule_file in rule_files:
                                 'mitre':[]
                             }
 
-                            # print(current_ruleset_mitre_status)
+                            print(current_ruleset_mitre_status)
                             for mitre in rule.findall('mitre'):
                                 # Populate the current_ruleset_mitre_status dict for writing to JSON
                                 for id in mitre.findall('id'):
-                                    # print(id.text)
+                                    print(id.text)
                                     mitre_attrib_copy = mitre_attrib.copy()
                                     if 'technique' in id.attrib: mitre_attrib_copy['technique'] = id.attrib['technique']
                                     if 'tactic' in id.attrib: mitre_attrib_copy['tactic'] = id.attrib['tactic']
