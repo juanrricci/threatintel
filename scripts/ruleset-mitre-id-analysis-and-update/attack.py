@@ -7,6 +7,7 @@ attack = Attck()
 parser = argparse.ArgumentParser(description='Gets MITRE info based on id')
 parser.add_argument('rule_id', help='Id to match')
 parser.add_argument('t_id', help='technique or subtechnique ID')
+parser.add_argument('rule_desc)')
 parser.add_argument('-o', '--output', metavar="FILE_PATH", help="Save output to FILE_PATH")
 parser.add_argument('-V', '--verbose', action='store_true', help="Print detailed information")
 parser.add_argument('-d', '--debug', action='store_true', help='Print debug information')
@@ -17,8 +18,7 @@ id = args.t_id
 rule_number = args.rule_id
 
 found = False
-rule_description = 'Test rule description'
-
+rule_description = args.rule_desc
 for technique in attack.enterprise.techniques:
     for subtechnique in technique.subtechniques:    
         if subtechnique.id == id:
