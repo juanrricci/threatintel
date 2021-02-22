@@ -12,7 +12,9 @@ format:     plaintext
 reference:  www.example.com
 
 prematch:
+  action: OR
   regex: 
+    - '^sshd\[\d+\]:'
     - '^\w+\s+\d+\s+\d+:\d+:\d+\s+\S+\s+sshd\[\d+\]:'
 
 options:
@@ -21,31 +23,37 @@ options:
 events:
     - event: 
         id:             "001"
+        
         description:    "Invalid user"
         processors: 
-              - regex:    '^(?P<timestamp>\w+\s+\d+\s+\d+:\d+:\d+)\s+(?P<destination_hostname>\S+)\s+(?P<process_name>sshd)\[(?P<process_pid>\d+)\]: Invalid user (?P<user_name>\S+)\s+from\s+(?P<source_ip>\S+)\s+port\s+(?P<source_port>\S+)'
-              - resolve: 
+              - decode:
+                regex: '^(?P<timestamp>\w+\s+\d+\s+\d+:\d+:\d+)\s+(?P<hostname>\S+)\s+(?P<program_name>sshd)\[(?P<pid>\d+)\]: Invalid user (?P<dstuser>\S+)\s+from\s+(?P<srcip>\S+)\s+port\s+(?P<port>\S+)'
+
+              - set: 
+                original: timestamp
+                destination: timestamp
+              - set: 
+                original: program_name
+                destination: process.name
+              - set: 
+                original: hostname
+                destination: host.hostname
+              - set: 
+                original: dstuser
+                destination: user.name
+              - set: 
+                original: srcip
+                destination: source.ip                
+              - set: 
                 original: destination_hostname
                 destination: destination.hostname
-              - resolve: 
-                original: source_ip
-                destination: source.hostname
-              - resolve: 
-                original: process_name
-                destination: process.name
-              - resolve: 
-                original: process_pid
+              - set: 
+                original: pid
                 destination: process.pid
-              - resolve: 
-                original: source_ip
-                destination: source.hostname
-              - resolve: 
-                original: user_name
-                destination: user.name
-              - resolve: 
-                original: source_port
-                destination: source.port                                                                
+              - set: 
+                original: port
+                destination: source.port
               - geo:
-                original: source_ip
+                original: srcip
               - geo: 
                 original: destination_hostname

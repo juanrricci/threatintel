@@ -1,21 +1,26 @@
 import re
 import json
 
-def findLogType(rawLog):
+def returnLogType(rawLog):
     try:
         json.loads(rawLog)
     except ValueError as err:
         return 'plaintext'
     return 'json'
 
+def returnJSONType(rawLog):
+    return 'json'
+
+def returnPlaintextType(rawLog):
+    return 'plaintext'
 
 def formatByType(logType, rawLog):
     format = {
-        '1': 'json',
-        '4': findLogType(rawLog)
+        '1': returnJSONType,
+        '4': returnLogType
     }
 
-    return format.get(logType, 'Invalid log type')
+    return format.get(logType, 'Invalid log type')(rawLog)
 
 def predecode(log):
     try:

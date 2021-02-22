@@ -75,7 +75,7 @@ def decodePlaintext(predecodedLog, chosenDecoderFilename):
                 if 'regex' in processor:
                     regex_groups = re.match(processor['regex'], predecodedLog['log']['raw'])
 
-                elif 'resolve' in processor and processor['resolve'] == None:
+                elif 'set' in processor and processor['set'] == None:
                     try:
                         decodedLog[processor['destination']] = regex_groups.group(processor['original'])
                     except:
