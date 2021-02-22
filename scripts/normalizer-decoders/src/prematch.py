@@ -15,14 +15,14 @@ def checkFields(benedictedLog, prematchFields):
 
 def checkRegex(rawLog, prematchRegex):
     for regex in prematchRegex:
-        print('-- Checking regex', regex)
-        if not re.match(regex, rawLog):
-            print('* Regex', regex, 'is invalid. Decoder invalid too.')
-            return False
+        print('-- Checking prematch regex', regex)
+        if re.match(regex, rawLog):
+            print('* Prematch regex', regex, 'is valid. Matched decoder.')
+            return True
         else:
-            print('--- Regex', regex, 'is valid. Checking the following one...')
-    print('* All fields are valid. Matched decoder.')
-    return True
+            print('--- Prematch regex', regex, 'is invalid. Checking the following one...')
+    print('* All prematch regex are invalid. Decoder skipped.')
+    return False
 
 def checkJSONDecoders(rawLog, matchedDecoders):
     benedictedLog = benedict(rawLog)
