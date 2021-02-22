@@ -38,19 +38,19 @@ def main():
 
                 # Once the right decoder is found, the log information is decoded
                 # and stored in normalized fields.
-                if chosenDecoderFilename:
-                    decodedLog = decode(predecodedLog, chosenDecoderFilename)
-                    print('\nDecoded log:')
-                    pprint(decodedLog)
+                # if chosenDecoderFilename:
+                #     decodedLog = decode(predecodedLog, chosenDecoderFilename)
+                #     print('\nDecoded log:')
+                #     pprint(decodedLog)
 
-                    # The decoded log is written in JSON format to an output file
-                    with open('output/events.json', 'a') as events:
-                        json.dump(decodedLog, events, indent=4)
-                        # json.dump(decodedLog, events)
-                        events.write('\n')
+                #     # The decoded log is written in JSON format to an output file
+                #     with open('output/events.json', 'a') as events:
+                #         json.dump(decodedLog, events, indent=4)
+                #         # json.dump(decodedLog, events)
+                #         events.write('\n')
 
-                else:
-                    print('\n** Not matched decoder. Log skipped. **')
+                # else:
+                #     print('\n** Not matched decoder. Log skipped. **')
 
             except:
                 print('\nInvalid log format.')

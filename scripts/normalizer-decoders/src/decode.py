@@ -51,6 +51,7 @@ def decodeJSON(predecodedLog, chosenDecoderFilename):
     return decodedLog
 
 
+
 def decodePlaintext(predecodedLog, chosenDecoderFilename):
     decodedLog = benedict()
     decodedLog['agent'] = predecodedLog['agent']
@@ -68,16 +69,17 @@ def decodePlaintext(predecodedLog, chosenDecoderFilename):
         for event in decoderDict['events']:
             # print('\nEVENT:')
             # pprint(event)
-            regex_groups = {}
-            for processor in event['event']['processors']:  
+            regex_group = {}
+            for processor in event['event']['processors']:
                 # print('PROCESSOR', processor)  
 
+
                 if 'regex' in processor:
-                    regex_groups = re.match(processor['regex'], predecodedLog['log']['raw'])
+                    regex_group = re.match(processor['regex'], predecodedLog['log']['raw'])
 
                 elif 'set' in processor and processor['set'] == None:
                     try:
-                        decodedLog[processor['destination']] = regex_groups.group(processor['original'])
+                        decodedLog[processor['destination']] = regex_group.group(processor['original'])
                     except:
                         continue
 
