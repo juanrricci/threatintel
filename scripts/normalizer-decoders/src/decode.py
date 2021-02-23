@@ -67,11 +67,17 @@ def decodePlaintext(predecodedLog, chosenDecoderFilename):
         'resolve': processResolve
     }
 
-    processorDict = {
-        'regex': [],
-        'set': [],
-        'resolve': []
-    }
+    # processorDict = {
+    #     'regex': [],
+    #     'set': [],
+    #     'resolve': []
+    # }
+
+    processorKeys = list(processorFunctions.keys())
+    print('ProcessorKeys:', processorKeys)
+
+    processorDict = {key : [] for key in processorKeys}
+    print('ProcessorDict:', processorDict)
 
     decodedLog = benedict()
     decodedLog['agent'] = predecodedLog['agent']
@@ -94,7 +100,9 @@ def decodePlaintext(predecodedLog, chosenDecoderFilename):
                 # print('PROCESSOR', processor)  
 
 
-                if 'regex' in processor: processorDict['regex'].append(processor['regex'])
+                if 'regex' in processor:
+                    processorDict['regex'].append(processor['regex'])
+
                     # regex_group = re.match(processor['regex'], predecodedLog['log']['raw'])
                     
 
@@ -106,8 +114,8 @@ def decodePlaintext(predecodedLog, chosenDecoderFilename):
                     
                 elif 'resolve' in processor and processor['resolve'] == None: processorDict['resolve'].append({'original': processor['original'], 'destination': processor['destination']})
 
-            print('ProcessorDict:', processorDict)
-            quit()
+            # print('ProcessorDict:', processorDict)
+
 
     return decodedLog
 
