@@ -170,3 +170,46 @@
         "sshd": "Apr 23 07:03:53 machinename sshd[29961]: User root from 12.3.4.5"
     }
 }
+{
+    "agent": {
+        "id": "001",
+        "name": "agentname",
+        "ip": "192.168.3.1",
+        "location": "/var/log/syslog"
+    },
+    "event": {
+        "original": "Feb  8 12:00:43 ip-172-31-41-217 sshd[12689]: Invalid user teste from 106.75.148.48 port 49774"
+    },
+    "syslog": {
+        "sshd": "Feb  8 12:00:43 ip-172-31-41-217 sshd[12689]: Invalid user teste from 106.75.148.48 port 49774"
+    },
+    "timestamp": "Feb  8 12:00:43",
+    "process": {
+        "name": "sshd",
+        "pid": "12689"
+    },
+    "host": {
+        "hostname": "ip-172-31-41-217"
+    },
+    "user": {
+        "name": "teste"
+    },
+    "source": {
+        "ip": "106.75.148.48",
+        "port": "49774"
+    }
+}
+{
+    "agent": {
+        "id": "001",
+        "name": "agentname",
+        "ip": "192.168.3.1",
+        "location": "/var/log/syslog"
+    },
+    "event": {
+        "original": "Apr 23 07:03:53 machinename sshd[29961]: User root from 12.3.4.5"
+    },
+    "syslog": {
+        "sshd": "Apr 23 07:03:53 machinename sshd[29961]: User root from 12.3.4.5"
+    }
+}

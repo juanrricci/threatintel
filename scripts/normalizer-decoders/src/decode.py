@@ -50,9 +50,29 @@ def decodeJSON(predecodedLog, chosenDecoderFilename):
 
     return decodedLog
 
+def processRegex():
+    return True
+
+def processSet():
+    return True
+
+def processResolve():
+    return True
 
 
 def decodePlaintext(predecodedLog, chosenDecoderFilename):
+    processorFunctions = {
+        'regex': processRegex,
+        'set': processSet,
+        'resolve': processResolve
+    }
+
+    processorDict = {
+        'regex': [],
+        'set': [],
+        'resolve': []
+    }
+
     decodedLog = benedict()
     decodedLog['agent'] = predecodedLog['agent']
     decodedLog['event.original'] = predecodedLog['log']['raw']
@@ -69,19 +89,25 @@ def decodePlaintext(predecodedLog, chosenDecoderFilename):
         for event in decoderDict['events']:
             # print('\nEVENT:')
             # pprint(event)
-            regex_group = {}
+
             for processor in event['event']['processors']:
                 # print('PROCESSOR', processor)  
 
 
-                if 'regex' in processor:
-                    regex_group = re.match(processor['regex'], predecodedLog['log']['raw'])
+                if 'regex' in processor: processorDict['regex'].append(processor['regex'])
+                    # regex_group = re.match(processor['regex'], predecodedLog['log']['raw'])
+                    
 
-                elif 'set' in processor and processor['set'] == None:
-                    try:
-                        decodedLog[processor['destination']] = regex_group.group(processor['original'])
-                    except:
-                        continue
+                elif 'set' in processor and processor['set'] == None: processorDict['set'].append({'original': processor['original'], 'destination': processor['destination']})
+                    # try:
+                    #     decodedLog[processor['destination']] = regex_group.group(processor['original'])
+                    # except:
+                    #     continue
+                    
+                elif 'resolve' in processor and processor['resolve'] == None: processorDict['resolve'].append({'original': processor['original'], 'destination': processor['destination']})
+
+            print('ProcessorDict:', processorDict)
+            quit()
 
     return decodedLog
 
