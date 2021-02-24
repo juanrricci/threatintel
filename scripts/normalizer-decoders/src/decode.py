@@ -54,8 +54,26 @@ def processRegex(decodedLog, regexList, rawLog):
     print('\nregexList:', regexList)
     for regex in regexList:
         regexResult = re.search(regex['regex'], rawLog)
+        # if True:
         try:
-            print('\nREGEX:', regexResult.groupdict())
+            regexResultKeyValues = regexResult.groupdict()
+            print('\nREGEX:', regexResultKeyValues)
+            # decodedLog.update(regexResult.groupdict())
+            # regexResultKeys = list(regexResult.groupdict().keys())
+            regexResultKeys = list(regexResultKeyValues.keys())
+            print(regexResultKeys)
+            # newRegexResultKeys = []
+            dot = re.compile('__')
+            for regexKey in regexResultKeys:
+                newRegexResultKey = dot.sub('.', regexKey)
+                print('\nnewRegexResultKey:', newRegexResultKey)
+                # newRegexResultKeys.append(dot.sub('.', regexKey))
+                # print('\nDOT:', newRegexResultKeys)
+                decodedLog[newRegexResultKey] = regexResultKeyValues[regexKey]
+            # regexResultFormatted = dict(zip(newRegexResultKeys, regexResult.groupdict().values()))
+            # print('\nregexResultFormatted', regexResultFormatted)
+            # decodedLog.update(regexResultFormatted)
+
         except:
             continue
     return True
