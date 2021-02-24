@@ -50,48 +50,40 @@ def decodeJSON(predecodedLog, chosenDecoderFilename):
 
     return decodedLog
 
-def processRegex(decodedLog, regexList, rawLog):
+def plaintextProcessRegex(decodedLog, regexList, rawLog):
     print('\nregexList:', regexList)
     for regex in regexList:
         regexResult = re.search(regex['regex'], rawLog)
         # if True:
         try:
             regexResultKeyValues = regexResult.groupdict()
-            print('\nREGEX:', regexResultKeyValues)
-            # decodedLog.update(regexResult.groupdict())
-            # regexResultKeys = list(regexResult.groupdict().keys())
+            # print('\nREGEX:', regexResultKeyValues)
             regexResultKeys = list(regexResultKeyValues.keys())
-            print(regexResultKeys)
-            # newRegexResultKeys = []
+            # print(regexResultKeys)
             dot = re.compile('__')
             for regexKey in regexResultKeys:
                 newRegexResultKey = dot.sub('.', regexKey)
-                print('\nnewRegexResultKey:', newRegexResultKey)
-                # newRegexResultKeys.append(dot.sub('.', regexKey))
-                # print('\nDOT:', newRegexResultKeys)
+                # print('\nnewRegexResultKey:', newRegexResultKey)
                 decodedLog[newRegexResultKey] = regexResultKeyValues[regexKey]
-            # regexResultFormatted = dict(zip(newRegexResultKeys, regexResult.groupdict().values()))
-            # print('\nregexResultFormatted', regexResultFormatted)
-            # decodedLog.update(regexResultFormatted)
 
         except:
             continue
     return True
 
-def processSet(decodedLog, setList, rawLog):
+def plaintextProcessSet(decodedLog, setList, rawLog):
     print('\nsetList:', setList)
     return True
 
-def processResolve(decodedLog, resolveList, rawLog):
+def plaintextProcessResolve(decodedLog, resolveList, rawLog):
     print('\nresolveList:', resolveList)
     return True
 
 
 def decodePlaintext(predecodedLog, chosenDecoderFilename):
     processorFunctions = {
-        'regex': processRegex,
-        'set': processSet,
-        'resolve': processResolve
+        'regex': plaintextProcessRegex,
+        'set': plaintextProcessSet,
+        'resolve': plaintextProcessResolve
     }
 
     processorKeys = list(processorFunctions.keys())
@@ -110,27 +102,32 @@ def decodePlaintext(predecodedLog, chosenDecoderFilename):
         decodedLog[decoderDict['vendor']][decoderDict['component']] = predecodedLog['log']['raw']
 
         for event in decoderDict['events']:
-            for processor in event['event']['processors']:
+            print('\nEVENT*:', event)
+            if re.search(event['event']['match'], predecodedLog['log']['raw']):
+                print('\nMatched event:', event['event']['id'], event['event']['description'])
+                for processor in event['event']['processors']:
+                    for processorType in processorKeys:
+                        if processorType in processor: processorDict[processorType].append(processor)
+                    # if 'regex' in processor:
+                    #     processorDict['regex'].append(processor['regex'])
+
+                    #     # regex_group = re.match(processor['regex'], predecodedLog['log']['raw'])
+                        
+
+                    # elif 'set' in processor and processor['set'] == None: processorDict['set'].append({'original': processor['original'], 'destination': processor['destination']})
+                    #     # try:
+                    #     #     decodedLog[processor['destination']] = regex_group.group(processor['original'])
+                    #     # except:
+                    #     #     continue
+                        
+                    # elif 'resolve' in processor and processor['resolve'] == None: processorDict['resolve'].append({'original': processor['original'], 'destination': processor['destination']})
+
+                print('ProcessorDict:', processorDict)
+
                 for processorType in processorKeys:
-                    if processorType in processor: processorDict[processorType].append(processor)
-                # if 'regex' in processor:
-                #     processorDict['regex'].append(processor['regex'])
-
-                #     # regex_group = re.match(processor['regex'], predecodedLog['log']['raw'])
-                    
-
-                # elif 'set' in processor and processor['set'] == None: processorDict['set'].append({'original': processor['original'], 'destination': processor['destination']})
-                #     # try:
-                #     #     decodedLog[processor['destination']] = regex_group.group(processor['original'])
-                #     # except:
-                #     #     continue
-                    
-                # elif 'resolve' in processor and processor['resolve'] == None: processorDict['resolve'].append({'original': processor['original'], 'destination': processor['destination']})
-
-            print('ProcessorDict:', processorDict)
-
-            for processorType in processorKeys:
-                processorFunctions.get(processorType, 'Invalid function key')(decodedLog, processorDict[processorType], predecodedLog['log']['raw'])
+                    processorFunctions.get(processorType, 'Invalid function key')(decodedLog, processorDict[processorType], predecodedLog['log']['raw'])
+            
+            else: print('\nSkipped event:', event['event']['id'], event['event']['description'])
 
     return decodedLog
 

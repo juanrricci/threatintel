@@ -13,7 +13,7 @@
     },
     "timestamp": "Feb  8 12:00:43",
     "destination": {
-        "hostname": "Feb"
+        "hostname": "ip-172-31-41-217"
     },
     "process": {
         "name": "sshd",
@@ -24,7 +24,7 @@
     },
     "source": {
         "ip": "106.75.148.48",
-        "port": "Feb"
+        "port": "49774"
     }
 }
 {
@@ -42,13 +42,13 @@
     },
     "timestamp": "Apr 23 07:03:53",
     "destination": {
-        "hostname": "Apr"
+        "hostname": "machinename"
     },
     "process": {
         "name": "sshd",
         "pid": "29961"
     },
-    "source": {
-        "port": "Apr"
+    "user": {
+        "name": "root"
     }
 }
