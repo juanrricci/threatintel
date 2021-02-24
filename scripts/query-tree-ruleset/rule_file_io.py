@@ -1,13 +1,15 @@
 # Custom Imports
-import xml_parser
+# import xml_parser
 import tree_ruleset as TR
 
 # Imports
 from pathlib import Path
 import os
+import importlib
+
 
 class RulesetReader:
-    def __init__(self, dirPath):
+    def __init__(self, dirPath, parser):
         """Initialize Reader
 
         Args:
@@ -17,12 +19,19 @@ class RulesetReader:
             FileNotFoundError: if directory does not exits
         """
 
+        self.dirPath = Path(dirPath)
+
         if not self.__check_directory_path(dirPath):
             raise FileNotFoundError(message =
         f'Error: directory {dirPath} does not exists')
 
+        elif parser == 'xml':
+            self.__parser = importlib.import_module('xml_parser')
         else:
-            self.dirPath = Path(dirPath)
+            raise ParserNotSupportedError(
+                f'Error, parser for {parser} not supported')
+
+
 
 
     def __check_directory_path(self, path):
@@ -52,8 +61,8 @@ class RulesetReader:
         for filename in os.listdir(self.dirPath):
             f = os.path.join(self.dirPath, filename)
             if os.path.isfile(f):
-                xmlParser = xml_parser.XmlParser(f)
-                ruleTree.union(xmlParser.get_rule_tree())
+                parser = self.__parser.Parser(f)
+                ruleTree.union(parser.get_rule_tree())
 
         return ruleTree
 
@@ -84,3 +93,14 @@ class RulesetReader:
 #             return result
 #         else:
 #             raise StopIteration
+
+def ParserNotSupportedError(Exception):
+    """Exception raised if specified parser is not supported by RulesetReader.
+
+    Attributes:
+        message -- explanation of the error
+    """
+
+    def __init__(self, message):
+        self.message = message
+        super().__init__(self.message)

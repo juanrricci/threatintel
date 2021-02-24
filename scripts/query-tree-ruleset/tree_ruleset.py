@@ -6,7 +6,6 @@ class RuleNode:
 
         Ascendat relationship only (parent)
     """
-
     def __init__(self, id):
         """Initializes node
 
@@ -16,15 +15,25 @@ class RuleNode:
 
         self.id = id
         self.parents = []
+        self.frec_parents = []
 
-    def add_parents(self, *parents):
+    def add_parent(self, parent):
         """Add parents
 
         Args:
             *parents: parents id to be added
         """
 
-        self.parents.append(parents)
+        self.parents.append(parent)
+
+    def add_frec_parent(self, parent, frec):
+        """Add parents by frecuancy relation
+
+        Args:
+            *parents: parents id to be added
+        """
+
+        self.parents.append({parent: frec})
 
 class RuleTree:
     """Data structure representing the whole ruleset
@@ -80,7 +89,12 @@ class RuleTree:
 
         self.__tree = self.__tree | other.__tree
 
-    def rule_count(self):
+    def size(self):
+        """Return size of tree (number of rules)
+
+        Returns:
+            int: number of RuleNodes
+        """
 
         return len(self.__tree)
 
