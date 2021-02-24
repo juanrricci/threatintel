@@ -4,8 +4,46 @@ import re
 from benedict import benedict
 from pprint import pprint
 
+def JSONProcessSet(decodedLog, setList, benedictedLog):
+    print('\nJSON setList:', setList)
+    for set in setList:
+        try:
+            decodedLog[set['destination']] = benedictedLog[set['original']]
+        except:
+            continue
+    return True
+
+def JSONProcessParse(decodedLog, parseList, benedictedLog):
+    print('\nJSON parseList:', parseList)
+    for parse in parseList:
+        try:
+            # print('benedicted original:', benedictedLog[processor['original']])
+            m = re.search(parse['regex'], benedictedLog[parse['original']])
+            # print('m:', m.groups())
+            n = re.search('\.(?P<hash>\w+)$', parse['destination'])
+            decodedLog[parse['destination']] = m.group(n.group('hash'))
+        except:
+            continue        
+    return True
+
+def JSONProcessResolve(decodedLog, resolveList, benedictedLog):
+    print('\nJSON resolveList:', resolveList)
+    return True
+
 
 def decodeJSON(predecodedLog, chosenDecoderFilename):
+    processorFunctions = {
+        'set': JSONProcessSet,
+        'parse': JSONProcessParse,
+        'resolve': JSONProcessResolve
+    }
+
+    processorKeys = list(processorFunctions.keys())
+    print('ProcessorKeys:', processorKeys)
+
+    processorDict = {key : [] for key in processorKeys}
+    print('ProcessorDict:', processorDict)
+
     decodedLog = benedict()
     decodedLog['agent'] = predecodedLog['agent']
     decodedLog['event.original'] = predecodedLog['log']['raw']
@@ -20,33 +58,36 @@ def decodeJSON(predecodedLog, chosenDecoderFilename):
         decodedLog[decoderDict['vendor']][decoderDict['component']] = rawToJSON
 
         for event in decoderDict['events']:
-            # print('\nEVENT:')
-            # pprint(event)
+            for processor in event['event']['processors']:
+                for processorType in processorKeys:  
+                    if processorType in processor: processorDict[processorType].append(processor)
+                    
+            print('ProcessorDict:', processorDict)
 
-            for processor in event['event']['processors']:  
-                # print('PROCESSOR', processor)  
+            for processorType in processorKeys:
+                processorFunctions.get(processorType, 'Invalid function key')(decodedLog, processorDict[processorType], benedictedLog)
+            
+                    # if 'set' in processor and processor['set'] == None:
+                    #     try:
+                    #         decodedLog[processor['destination']] = benedictedLog[processor['original']]
+                    #     except:
+                    #         continue
 
-                if 'set' in processor and processor['set'] == None:
-                    try:
-                        decodedLog[processor['destination']] = benedictedLog[processor['original']]
-                    except:
-                        continue
+                    # elif 'parse' in processor and processor['parse'] == None:
+                    #     try:
+                    #         # print('benedicted original:', benedictedLog[processor['original']])
+                    #         m = re.search(processor['regex'], benedictedLog[processor['original']])
+                    #         # print('m:', m.groups())
+                    #         n = re.search('\.(?P<hash>\w+)$', processor['destination'])
+                    #         decodedLog[processor['destination']] = m.group(n.group('hash'))
+                    #     except:
+                    #         continue
 
-                elif 'parse' in processor and processor['parse'] == None:
-                    try:
-                        # print('benedicted original:', benedictedLog[processor['original']])
-                        m = re.search(processor['regex'], benedictedLog[processor['original']])
-                        # print('m:', m.groups())
-                        n = re.search('\.(?P<hash>\w+)$', processor['destination'])
-                        decodedLog[processor['destination']] = m.group(n.group('hash'))
-                    except:
-                        continue
-
-                elif 'resolve' in processor and processor['resolve'] == None:
-                    try:   
-                        decodedLog[processor['destination']] = benedictedLog[processor['original']]
-                    except:
-                        continue
+                    # elif 'resolve' in processor and processor['resolve'] == None:
+                    #     try:   
+                    #         decodedLog[processor['destination']] = benedictedLog[processor['original']]
+                    #     except:
+                    #         continue
 
     return decodedLog
 
@@ -65,7 +106,6 @@ def plaintextProcessRegex(decodedLog, regexList, rawLog):
                 newRegexResultKey = dot.sub('.', regexKey)
                 # print('\nnewRegexResultKey:', newRegexResultKey)
                 decodedLog[newRegexResultKey] = regexResultKeyValues[regexKey]
-
         except:
             continue
     return True
