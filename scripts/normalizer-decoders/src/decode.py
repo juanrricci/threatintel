@@ -52,7 +52,6 @@ def decodeJSON(predecodedLog, chosenDecoderFilename):
         benedictedLog = benedict(predecodedLog['log']['raw'])
         decoderDict = yaml.load(decoderFileOpened, Loader=yaml.FullLoader)
 
-        # decodedLog[decoderDict['vendor']][decoderDict['component']] = json.loads(predecodedLog['log']['raw'])
         rawToJSON = json.loads(predecodedLog['log']['raw'])
         decodedLog[decoderDict['vendor']] = {}
         decodedLog[decoderDict['vendor']][decoderDict['component']] = rawToJSON
@@ -66,28 +65,6 @@ def decodeJSON(predecodedLog, chosenDecoderFilename):
 
             for processorType in processorKeys:
                 processorFunctions.get(processorType, 'Invalid function key')(decodedLog, processorDict[processorType], benedictedLog)
-            
-                    # if 'set' in processor and processor['set'] == None:
-                    #     try:
-                    #         decodedLog[processor['destination']] = benedictedLog[processor['original']]
-                    #     except:
-                    #         continue
-
-                    # elif 'parse' in processor and processor['parse'] == None:
-                    #     try:
-                    #         # print('benedicted original:', benedictedLog[processor['original']])
-                    #         m = re.search(processor['regex'], benedictedLog[processor['original']])
-                    #         # print('m:', m.groups())
-                    #         n = re.search('\.(?P<hash>\w+)$', processor['destination'])
-                    #         decodedLog[processor['destination']] = m.group(n.group('hash'))
-                    #     except:
-                    #         continue
-
-                    # elif 'resolve' in processor and processor['resolve'] == None:
-                    #     try:   
-                    #         decodedLog[processor['destination']] = benedictedLog[processor['original']]
-                    #     except:
-                    #         continue
 
     return decodedLog
 
@@ -148,19 +125,6 @@ def decodePlaintext(predecodedLog, chosenDecoderFilename):
                 for processor in event['event']['processors']:
                     for processorType in processorKeys:
                         if processorType in processor: processorDict[processorType].append(processor)
-                    # if 'regex' in processor:
-                    #     processorDict['regex'].append(processor['regex'])
-
-                    #     # regex_group = re.match(processor['regex'], predecodedLog['log']['raw'])
-                        
-
-                    # elif 'set' in processor and processor['set'] == None: processorDict['set'].append({'original': processor['original'], 'destination': processor['destination']})
-                    #     # try:
-                    #     #     decodedLog[processor['destination']] = regex_group.group(processor['original'])
-                    #     # except:
-                    #     #     continue
-                        
-                    # elif 'resolve' in processor and processor['resolve'] == None: processorDict['resolve'].append({'original': processor['original'], 'destination': processor['destination']})
 
                 print('ProcessorDict:', processorDict)
 
