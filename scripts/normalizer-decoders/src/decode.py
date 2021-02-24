@@ -50,13 +50,22 @@ def decodeJSON(predecodedLog, chosenDecoderFilename):
 
     return decodedLog
 
-def processRegex():
+def processRegex(decodedLog, regexList, rawLog):
+    print('\nregexList:', regexList)
+    for regex in regexList:
+        regexResult = re.search(regex['regex'], rawLog)
+        try:
+            print('\nREGEX:', regexResult.groupdict())
+        except:
+            continue
     return True
 
-def processSet():
+def processSet(decodedLog, setList, rawLog):
+    print('\nsetList:', setList)
     return True
 
-def processResolve():
+def processResolve(decodedLog, resolveList, rawLog):
+    print('\nresolveList:', resolveList)
     return True
 
 
@@ -78,21 +87,12 @@ def decodePlaintext(predecodedLog, chosenDecoderFilename):
     decodedLog['event.original'] = predecodedLog['log']['raw']
 
     with open(chosenDecoderFilename) as decoderFileOpened: 
-        # benedictedLog = benedict(predecodedLog['log']['raw'])
         decoderDict = yaml.load(decoderFileOpened, Loader=yaml.FullLoader)
-
-        # decodedLog[decoderDict['vendor']][decoderDict['component']] = json.loads(predecodedLog['log']['raw'])
-        # rawToJSON = json.loads(predecodedLog['log']['raw'])
         decodedLog[decoderDict['vendor']] = {}
         decodedLog[decoderDict['vendor']][decoderDict['component']] = predecodedLog['log']['raw']
 
         for event in decoderDict['events']:
-            # print('\nEVENT:')
-            # pprint(event)
-
             for processor in event['event']['processors']:
-                # print('PROCESSOR', processor)  
-
                 for processorType in processorKeys:
                     if processorType in processor: processorDict[processorType].append(processor)
                 # if 'regex' in processor:
@@ -111,6 +111,8 @@ def decodePlaintext(predecodedLog, chosenDecoderFilename):
 
             print('ProcessorDict:', processorDict)
 
+            for processorType in processorKeys:
+                processorFunctions.get(processorType, 'Invalid function key')(decodedLog, processorDict[processorType], predecodedLog['log']['raw'])
 
     return decodedLog
 
