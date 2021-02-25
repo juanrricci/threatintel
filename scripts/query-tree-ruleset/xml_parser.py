@@ -4,7 +4,7 @@ import tree_ruleset as TR
 # Imports
 import xml.etree.ElementTree as ET
 from pathlib import Path
-import os
+import os, sys
 
 class Parser:
     """XmlParser, parse xml file to RuleTree"""
@@ -64,20 +64,30 @@ class Parser:
             # ignore anything but groups
             if element.tag != 'group':
                 pass
-                # if args.debug:
-                #     sys.stdout.write(f'Ignoring {element.tag}: {element.attrib}{os.linesep}')
+                # # if args.debug:
+                # sys.stdout.write(f'Ignoring {element.tag}: {element.attrib}{os.linesep}')
+                # for child in element:
+                #     sys.stdout.write(f'    {child.tag}: {child.attrib}{child.linesep}')
+
             else:
                 # if args.debug:
                 #     sys.stdout.write(f'{os.linesep}Found {element.tag}: {element.attrib}{os.linesep}Searching inside:{os.linesep}')
 
                 # Iterate over rules
                 for rule in element:
+                    # Parse rule id
                     ruleNode = TR.RuleNode(rule.attrib['id'])
-                    # Iterate over parents
-                    # parents = rule.findall('if_sid')
-                    # for parent in parents:
-                    #     ruleNode.add_parents(parent.text.split(","))
 
+                    for attr in rule:
+                        if attr.tag == 'if_sid':
+                            for parent in attr.text.split(','):
+                                ruleNode.add_parent(parent.replace(' ', ''))
+                        # Parse frequency parent
+                        elif attr.tag == 'if_matched_sid':
+                            for parent in attr.text.split(','):
+                                ruleNode.add_frec_parent(parent.replace(' ', ''))
+
+                    # Add ruleNode to ruleTree
                     ruleTree.add_rule(ruleNode.id, ruleNode)
 
         return ruleTree

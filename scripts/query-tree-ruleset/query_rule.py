@@ -48,33 +48,44 @@ parser_generate.add_argument(
     default='./tree_ruleset.json',
     help='Specify file output path, (default: %(default)s) ')
 
-# query
-parser_query = subparsers.add_parser(
-    'query',
-    help='Interactive prompt for quering rules')
+# # query
+# parser_query = subparsers.add_parser(
+#     'query',
+#     help='Interactive prompt for quering rules')
 
 
 ### GENERATE FUNCTION ###
 def generate(input_dir, extension, output_dir, d_level, verbose):
     rulesetReader = RIO.RulesetReader(input_dir, extension)
     ruleTree = rulesetReader.generate_tree()
-    print(ruleTree.size())
-    #ruleTree.to_str()
+
+    return ruleTree
 
 
 ### QUERY FUNCTION ###
-def query():
-    pass
+def query(ruleTree):
+    sys.stdout.write(f'Correctly loaded {len(ruleTree.tree)} rules, type rule id and press enter:{os.linesep}')
+    for key in ruleTree.tree.keys():
+        print(key)
+    # while True:
+    #     rule = 0
+    #     rule = sys.stdin.readline().replace(os.linesep, '')
+    #     sys.stdout.write(
+    #         f'Rule {rule}: {ruleTree.tree[rule].parents}{ruleTree.tree[rule].frec_parents}{os.linesep}'
+    #     )
 
 if __name__ == "__main__":
     args = parser.parse_args()
-    if args.COMMAND == 'generate':
-        generate(
+    ruleTree = generate(
             args.input_dir,
             args.extension,
             args.output,
             args.debug,
             args.verbose)
-    elif args.COMMAND == 'query':
-        query()
+    query(ruleTree)
+    # args = parser.parse_args()
+    # if args.COMMAND == 'generate':
+
+    # elif args.COMMAND == 'query':
+
 

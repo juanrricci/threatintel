@@ -64,6 +64,7 @@ class RulesetReader:
                 parser = self.__parser.Parser(f)
                 ruleTree.union(parser.get_rule_tree())
 
+        ruleTree.check_integrity()
         return ruleTree
 
 

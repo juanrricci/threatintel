@@ -16,6 +16,7 @@ class RuleNode:
         self.id = id
         self.parents = []
         self.frec_parents = []
+        self.file = ''
 
     def add_parent(self, parent):
         """Add parents
@@ -23,17 +24,16 @@ class RuleNode:
         Args:
             *parents: parents id to be added
         """
-
         self.parents.append(parent)
 
-    def add_frec_parent(self, parent, frec):
+    def add_frec_parent(self, parent):
         """Add parents by frecuancy relation
 
         Args:
             *parents: parents id to be added
         """
 
-        self.parents.append({parent: frec})
+        self.frec_parents.append(parent)
 
 class RuleTree:
     """Data structure representing the whole ruleset
@@ -43,7 +43,8 @@ class RuleTree:
 
     def __init__(self):
         """Initializes empty tree"""
-        self.__tree = {}
+        self.tree = {}
+        self.groups = {}
 
     def __getitem__(self, key):
         """get rule by id
@@ -55,7 +56,9 @@ class RuleTree:
             ruleNode: rule identified by key
         """
 
-        return self.__tree[id]
+        return self.tree[key]
+
+
 
 
     def add_rule(self, id, ruleNode):
@@ -66,10 +69,10 @@ class RuleTree:
             ruleNode (RuleNode): rule node to be added
         """
 
-        if id in self.__tree.keys():
+        if id in self.tree.keys():
             raise DuplicatedIdError(f"Rule {id} already present on tree, nothing added")
         else:
-            self.__tree[id] = ruleNode
+            self.tree[id] = ruleNode
 
 
     def union(self, other):
@@ -82,27 +85,46 @@ class RuleTree:
             DuplicatedIdError: Raised if same rule id found on both
         """
 
-        for key in self.__tree.keys():
-            if key in other.__tree.keys():
+        for key in self.tree.keys():
+            if key in other.tree.keys():
                 raise DuplicatedIdError(
             f'Error in union: duplicated id {key} found')
 
-        self.__tree = self.__tree | other.__tree
+        self.tree = self.tree | other.tree
 
-    def size(self):
-        """Return size of tree (number of rules)
 
-        Returns:
-            int: number of RuleNodes
+    def check_integrity(self):
+        """Checks integruty of ruleTree
+
+        Raises:
+            IntegrityError: if missmatch between key and ruleNode.id
+            IntegrityError: if parent not present in ruleTree
+            IntegrityError: if frequency parent not present in ruleTree
         """
 
-        return len(self.__tree)
+        for key, rule in self.tree.items():
+            if key == rule.id:
+                for parent in rule.parents:
+                    if parent not in self.tree.keys():
+                        raise IntegrityError(
+                            f'Error parent {parent} of rule {key} not in ruleTree',
+                            parent, key)
+                for parent in rule.frec_parents:
+                    if parent not in self.tree:
+                        raise IntegrityError(
+                            f'Error frequency parent {parent} of rule {key} not in ruleTree',
+                            parent, key)
+            else:
+                raise IntegrityError(f'key {key} not equal to rule {rule.id}',
+                        child=key)
 
-    def to_str(self):
-        for id in self.__tree.keys():
-            print(id)
 
 
+
+
+
+
+# Exceptions
 class DuplicatedIdError(Exception):
     """Exception raised when duplicated ID detected
 
@@ -112,3 +134,17 @@ class DuplicatedIdError(Exception):
 
     def __init__(self, message):
         self.message = message
+
+
+class IntegrityError(Exception):
+    """Exception raised when integrity error detected
+
+    Args:
+        message (str): explanation of the error
+    """
+
+    def __init__(self, message, parent=None, child=None):
+        self.message = message
+        self.parent = parent
+        self.child = child
+
