@@ -74,18 +74,26 @@ class Parser:
                 #     sys.stdout.write(f'{os.linesep}Found {element.tag}: {element.attrib}{os.linesep}Searching inside:{os.linesep}')
 
                 # Iterate over rules
+
                 for rule in element:
                     # Parse rule id
                     ruleNode = TR.RuleNode(rule.attrib['id'])
+                    ruleNode.file = self.__filePath
 
                     for attr in rule:
                         if attr.tag == 'if_sid':
                             for parent in attr.text.split(','):
-                                ruleNode.add_parent(parent.replace(' ', ''))
+                                ruleNode.parents.append(parent.replace(' ', ''))
                         # Parse frequency parent
                         elif attr.tag == 'if_matched_sid':
+
+                            freq = 0
+                            if 'frequency' in rule.attrib:
+                                freq = rule.attrib['frequency']
                             for parent in attr.text.split(','):
-                                ruleNode.add_frec_parent(parent.replace(' ', ''))
+                                ruleNode.frec_parents[parent.replace(' ', '')]\
+                                    = freq
+
 
                     # Add ruleNode to ruleTree
                     ruleTree.add_rule(ruleNode.id, ruleNode)

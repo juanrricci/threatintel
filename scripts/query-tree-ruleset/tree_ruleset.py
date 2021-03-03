@@ -1,5 +1,6 @@
 # Data structures and functionality definig the ruleset tree
-
+import sys, os
+import tree_printer
 
 class RuleNode:
     """Data structure representing a node
@@ -15,25 +16,28 @@ class RuleNode:
 
         self.id = id
         self.parents = []
-        self.frec_parents = []
+        self.frec_parents = {}
         self.file = ''
 
-    def add_parent(self, parent):
-        """Add parents
+    # def add_parent(self, parent):
+    #     """A  dd parents
 
-        Args:
-            *parents: parents id to be added
-        """
-        self.parents.append(parent)
+    #     Args:
+    #         *parents: parents id to be added
+    #     """
+    #     self.parents.append(parent)
 
-    def add_frec_parent(self, parent):
-        """Add parents by frecuancy relation
+    # def add_frec_parent(self, parent):
+    #     """Add parents by frecuancy relation
 
-        Args:
-            *parents: parents id to be added
-        """
+    #     Args:
+    #         *parents: parents id to be added
+    #     """
 
-        self.frec_parents.append(parent)
+    #     self.frec_parents | parent
+
+
+
 
 class RuleTree:
     """Data structure representing the whole ruleset
@@ -57,8 +61,6 @@ class RuleTree:
         """
 
         return self.tree[key]
-
-
 
 
     def add_rule(self, id, ruleNode):
@@ -117,6 +119,75 @@ class RuleTree:
             else:
                 raise IntegrityError(f'key {key} not equal to rule {rule.id}',
                         child=key)
+
+
+
+    def print_parents(self, rule):
+        sys.stdout.write(f'{rule}:{self.tree[rule].parents}{self.tree[rule].frec_parents}{os.linesep}')
+        for parent in self.tree[rule].parents:
+            self.print_parents(parent)
+        for parent in self.tree[rule].frec_parents.keys():
+            self.print_parents(parent)
+        # tree = self.__parent_printer_tree(rule)
+        # tree = self.__parent_printer_tree(rule)
+        # print(tree)
+
+
+        # tree = tree(tree_printer.Node(2))
+        # print(tree_printer.drawTree(tree))
+
+    # def __parent_printer_tree(self,rule):
+    #     return tree_printer.Node(rule)(self.__parent_printer_tree(p) for p in self.tree[rule].parents )
+
+
+
+
+
+    def print_childs(self, rule):
+        childs = self.__get_childs(rule)
+        sys.stdout.write(f'{rule}:{childs}{os.linesep}')
+        for child in childs:
+            self.print_childs(child)
+
+
+    def __get_childs(self, rule):
+        """Return direct childs of rule
+
+        Args:
+            rule (int): rule id
+
+        Returns:
+            [int]: Array with childs ids
+        """
+
+        childs = []
+        for ruleID, ruleNode in self.tree.items():
+            if rule in ruleNode.parents or rule in ruleNode.frec_parents.keys():
+                childs.append(ruleID)
+
+        return childs
+
+
+    # def get_subtree_parents(self, rule):
+
+    #     subTree = RuleTree()
+
+    #     self.__r_get_subtree_parents(rule, subTree)
+
+
+    #     return subTree
+
+
+    # def __r_get_subtree_parents(self, rule, subTree):
+    #     subTree.add_rule(rule, self.tree[rule])
+    #         for parent in self.tree[rule].parents:
+    #             self.__r_get_subtree(parent, subTree)
+    #         for parent in self.tree[rule].frec_parents
+    #             self.__r_get_subtree(parent, subTree)
+
+
+
+
 
 
 

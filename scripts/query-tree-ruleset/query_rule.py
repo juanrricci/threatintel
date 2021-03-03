@@ -62,17 +62,62 @@ def generate(input_dir, extension, output_dir, d_level, verbose):
     return ruleTree
 
 
-### QUERY FUNCTION ###
+### QUERY FUNCTIONS ###
 def query(ruleTree):
     sys.stdout.write(f'Correctly loaded {len(ruleTree.tree)} rules, type rule id and press enter:{os.linesep}')
-    for key in ruleTree.tree.keys():
-        print(key)
-    # while True:
-    #     rule = 0
-    #     rule = sys.stdin.readline().replace(os.linesep, '')
-    #     sys.stdout.write(
-    #         f'Rule {rule}: {ruleTree.tree[rule].parents}{ruleTree.tree[rule].frec_parents}{os.linesep}'
-    #     )
+    # for key in ruleTree.tree.keys():
+    #     print(key)
+
+    prompt = True
+    option = ''
+
+    while prompt:
+        sys.stdout.write(f'Hello, choose option:{os.linesep} \
+        1) Query rule {os.linesep} \
+        2) Size of ruleset {os.linesep} \
+        3) Query groups {os.linesep} \
+        quit) quit program {os.linesep}')
+
+        option = sys.stdin.readline().replace(os.linesep, '')
+        if option == '1':
+            query_rule(ruleTree)
+        elif option == '2':
+            sys.stdout.write(f'{len(ruleTree.tree)}{os.linesep}')
+        elif option == '3':
+            query_group(ruleTree)
+        elif option == 'quit':
+            prompt = False
+        else:
+            sys.stdout.write(f'Not understood{os.linesep}')
+
+
+
+def query_rule(ruleTree):
+
+    prompt = True
+
+
+    while prompt:
+        sys.stdout.write(f'Enter rule number or go [back]:{os.linesep}')
+        option = ''
+        option = sys.stdin.readline().replace(os.linesep, '')
+
+        if option == 'back':
+            prompt = False
+        elif option in ruleTree.tree.keys():
+            sys.stdout.write(
+                f'----- Rule {option} PARENTS -----{os.linesep}')
+            ruleTree.print_parents(option)
+            sys.stdout.write(
+                f'----- Rule {option} CHILDS -----{os.linesep}')
+            ruleTree.print_childs(option)
+
+        else:
+            sys.stdout.write(f'Rule {option} not found{os.linesep}')
+
+
+def query_group(ruleTree):
+    sys.stdout.write(f'Not implemented yet {os.linesep}')
 
 if __name__ == "__main__":
     args = parser.parse_args()
