@@ -6,11 +6,28 @@ from pprint import pprint
 
 def JSONProcessSet(decodedLog, setList, benedictedLog):
     print('\nJSON setList:', setList)
+    extracted = benedict()
     for set in setList:
-        try:
-            decodedLog[set['destination']] = benedictedLog[set['original']]
-        except:
-            continue
+        if True:
+        # if 'wcs_origin' in set:
+            # if True:
+            if set['wcs_origin'] == 'normalized':
+                try:
+                    decodedLog[set['destination']] = benedictedLog[set['original']]
+                except:
+                    continue
+            elif set['wcs_origin'] == 'extracted':
+                try:
+                    extracted[set['destination']] = benedictedLog[set['original']]
+                except:
+                    continue
+        # else:
+        #     try:
+        #         decodedLog[set['destination']] = benedictedLog[set['original']]
+        #     except:
+        #         continue
+    print('\nEXTRACTED: ', extracted)
+    decodedLog['extracted'] = extracted
     return True
 
 def JSONProcessParse(decodedLog, parseList, benedictedLog):
@@ -54,7 +71,7 @@ def decodeJSON(predecodedLog, chosenDecoderFilename):
 
         rawToJSON = json.loads(predecodedLog['log']['raw'])
         decodedLog[decoderDict['vendor']] = {}
-        decodedLog[decoderDict['vendor']][decoderDict['component']] = rawToJSON
+        decodedLog[decoderDict['vendor']][decoderDict['module']] = rawToJSON
 
         for event in decoderDict['events']:
             for processor in event['event']['processors']:
@@ -71,7 +88,10 @@ def decodeJSON(predecodedLog, chosenDecoderFilename):
 def plaintextProcessRegex(decodedLog, regexList, rawLog):
     print('\nregexList:', regexList)
     for regex in regexList:
-        regexResult = re.search(regex['regex'], rawLog)
+        # replace(regex['regex'], ., __)
+        double_underscore = re.compile('\.')
+        validFormatRegex = double_underscore.sub('__', regex['regex'])
+        regexResult = re.search(validFormatRegex, rawLog)
         # if True:
         try:
             regexResultKeyValues = regexResult.groupdict()
@@ -116,7 +136,7 @@ def decodePlaintext(predecodedLog, chosenDecoderFilename):
     with open(chosenDecoderFilename) as decoderFileOpened: 
         decoderDict = yaml.load(decoderFileOpened, Loader=yaml.FullLoader)
         decodedLog[decoderDict['vendor']] = {}
-        decodedLog[decoderDict['vendor']][decoderDict['component']] = predecodedLog['log']['raw']
+        decodedLog[decoderDict['vendor']][decoderDict['module']] = predecodedLog['log']['raw']
 
         for event in decoderDict['events']:
             print('\nEVENT*:', event)
