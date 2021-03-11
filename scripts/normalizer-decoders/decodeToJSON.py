@@ -10,8 +10,11 @@ from src.fetchDecoders import fetchDecoders
 from src.predecode import predecode
 from src.prematch import prematch
 from src.decode import decode
+from src.wcsParse import wcsParse
 
 def main():
+
+    print('\nWCS List:', wcsParse())
     # Paths of YML decoder files are fetched and added to a dictionary which
     # classifies them by log format. Prematch options are included along with
     # decoder file paths.
@@ -25,8 +28,8 @@ def main():
             logNumber += 1
             print('\n** LOG #', logNumber , '**')
             print('\nLog:', log)
-            if True:
-            # try:
+            # if True:
+            try:
                 # Read logs are predecoded for extracting context information.
                 predecodedLog = predecode(log)
                 print('\nPredecoded log:')
@@ -52,9 +55,9 @@ def main():
                 else:
                     print('\n** Not matched decoder. Log skipped. **')
 
-            # except:
-            #     print('\nInvalid log format.')
-            #     continue
+            except:
+                print('\nInvalid log format.')
+                continue
 
 if __name__ == '__main__':
     main()

@@ -3,15 +3,27 @@ from benedict import benedict
 from pprint import pprint
 
 def checkFields(benedictedLog, prematchFields):
-    for field in prematchFields:
-        print('-- Checking field', field)
-        if not field in benedictedLog:
-            print('* Field', field, 'is invalid. Decoder invalid too.')
-            return False
-        else:
-            print('--- Field', field, 'is valid. Checking the following one...')
-    print('* All fields are valid. Matched decoder.')
-    return True
+    if 'condition' in prematchFields and prematchFields['condition'] == 'or':
+        print('\n**** ESTO TIENE CONDICION OR ****')
+        for field in prematchFields['has_field']:
+            print('-- Checking field', field)
+            if field in benedictedLog:
+                print('--- Field', field, 'is valid. Matched decoder.')
+                return True
+            else:
+                print('* Field', field, 'is invalid. Checking the following one...')
+        print('* All fields are invalid. Decoder invalid too.')
+        return False
+    else:
+        for field in prematchFields['has_field']:
+            print('-- Checking field', field)
+            if not field in benedictedLog:
+                print('* Field', field, 'is invalid. Decoder invalid too.')
+                return False
+            else:
+                print('--- Field', field, 'is valid. Checking the following one...')
+        print('* All fields are valid. Matched decoder.')
+        return True
 
 def checkRegex(rawLog, prematchRegex):
     for regex in prematchRegex:
@@ -28,7 +40,7 @@ def checkJSONDecoders(rawLog, matchedDecoders):
     benedictedLog = benedict(rawLog)
     for decoder in matchedDecoders:
         print('\n* Checking decoder', decoder['filename'])
-        if checkFields(benedictedLog, decoder['prematch']['has_field']):
+        if checkFields(benedictedLog, decoder['prematch']):
             print('\nMatched decoder:', decoder['filename'], 'by prematch fields.')
             return decoder['filename']
     print('\n* None of listed decoders have matched.')
