@@ -55,6 +55,7 @@ def decodeJSON(predecodedLog, chosenDecoderFilename):
         'resolve': JSONProcessResolve
     }
 
+    # Create some auxiliar structures that help with execution of decoder processors later
     processorKeys = list(processorFunctions.keys())
     print('ProcessorKeys:', processorKeys)
 
@@ -62,17 +63,23 @@ def decodeJSON(predecodedLog, chosenDecoderFilename):
     print('ProcessorDict:', processorDict)
 
     decodedLog = benedict()
+    # Add agent meta information
     decodedLog['agent'] = predecodedLog['agent']
+    # Add raw log under event.original field
     decodedLog['event.original'] = predecodedLog['log']['raw']
 
     with open(chosenDecoderFilename) as decoderFileOpened: 
+        # "Benedict" the raw log for applying processors on it later
         benedictedLog = benedict(predecodedLog['log']['raw'])
+        # Load the YAML decoder
         decoderDict = yaml.load(decoderFileOpened, Loader=yaml.FullLoader)
 
+        # Load the JSON raw log for adding it under vendor_value.module_value keys
         rawToJSON = json.loads(predecodedLog['log']['raw'])
         decodedLog[decoderDict['vendor']] = {}
         decodedLog[decoderDict['vendor']][decoderDict['module']] = rawToJSON
 
+        # Look for the processor type of each processor for executing the proper function
         for event in decoderDict['events']:
             for processor in event['event']['processors']:
                 for processorType in processorKeys:  
