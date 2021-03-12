@@ -28,7 +28,7 @@ def checkFields(benedictedLog, prematchFields):
 def checkRegex(rawLog, prematchRegex):
     for regex in prematchRegex:
         print('-- Checking prematch regex', regex)
-        if re.match(regex, rawLog):
+        if re.search(regex, rawLog):
             print('* Prematch regex', regex, 'is valid. Matched decoder.')
             return True
         else:

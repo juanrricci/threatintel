@@ -1,0 +1,83 @@
+---
+mapname:    Docker events
+author:     wazuh threatintell team
+created:    2021-03-05
+updated:    2021-03-05
+
+
+vendor:     docker
+module:     docker
+format:     json
+reference:  www.example.com
+
+prematch:
+  has_field: 
+    - docker
+    
+    
+options: 
+    - geo:  yes
+    - force: yes
+
+events:
+    - event: 
+        id:             "001"
+        description:    "Evento de Docker"
+        processors: 
+            - set:          
+              original:     integration
+              destination:  event.module
+            - set:          
+              original:     docker.Action
+              destination:  container.action
+            - set:          
+              original:     docker.Type
+              destination:  container.type
+            - set:          
+              original:     docker.Actor.Attributes.container
+              destination:  container.Actor.Attributes.container
+            - set:          
+              original:     docker.Actor.Attributes.image
+              destination:  container.image.name
+            - set:          
+              original:     docker.Actor.Attributes.width
+              destination:  container.Actor.Attributes.width
+            - set:          
+              original:     docker.Actor.Attributes.height
+              destination:  container.Actor.Attributes.height
+            - set:          
+              original:     docker.Actor.Attributes.name
+              destination:  container.name
+            - set:          
+              original:     docker.Actor.Attributes.signal
+              destination:  container.Actor.Attributes.signal
+            - set:          
+              original:     docker.Actor.Attributes.type
+              destination:  container.Actor.Attributes.type
+            - set:          
+              original:     docker.Actor.Attributes.exitCode
+              destination:  container.Actor.Attributes.exitCode
+            - set:          
+              original:     docker.Actor.Attributes.maintainer
+              destination:  container.Actor.Attributes.maintainer
+            - set:          
+              original:     docker.Actor.ID
+              destination:  container.Actor.ID
+            - set:          
+              original:     docker.scope
+              destination:  container.scope
+            - set:          
+              original:     docker.timeNano
+              destination:  container.time_Nano
+            - set:          
+              original:     docker.from
+              destination:  container.from
+            - set:          
+              original:     docker.time
+              destination:  timestamp
+            - set:          
+              original:     docker.id
+              destination:  container.id
+            - set:          
+              original:     docker.status
+              destination:  container.status

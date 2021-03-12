@@ -1,0 +1,60 @@
+mapname:    Netscaler events
+author:     wazuh threatintel team
+created:    2021-03-11
+updated:    2021-03-11
+wazuh:      5.0.0
+version:    1.0.0 
+revision:   1
+
+
+vendor:     citrix
+module:     netscaler
+format:     plaintext
+reference:  https://documentation.wazuh.com/wcs/current/field_reference/wazuh_netscaler.html
+
+
+prematch:
+  regex:
+    - '\d\d\/\d\d\/\d\d\d\d:\s*\d\d:\d\d:\d\d\s+GMT\s+\S+.+PPE.+:\s|\d\d\/\d\d\/\d\d\d\d:\s*|\d\d:\d\d:\d\d\s+GMT\s+ns\.+:\s'
+
+options: 
+    - geolocation:  yes
+
+
+events:
+    - event: 
+        id:             "001"
+        description:    "AAA LOGIN_FAILED"
+        match:          'AAA LOGIN_FAILED'
+        
+        # Fields aun no normalizados.
+        processors:     
+          # - regex:      '(?P<id>AAA) LOGIN_FAILED .+User (?P<user.name>\S+) - Client_ip (?P<source.address>\S+) - Failure_reason (?P<status>".+")'
+          - regex:      '(?P<id>AAA) LOGIN_FAILED .+User '
+          - regex:      '(?P<user.name>\S+) - Client_ip '
+          - regex:      '(?P<source.address>\S+) - Failure_reason '
+          - regex:      '(?P<status>".+")'
+    - event: 
+        id:             "002"
+        description:    "UI CMD_EXECUTED"
+        match:          'UI CMD_EXECUTED| API CMD_EXECUTED'
+        
+        # Fields aun no normalizados.
+        processors:     
+          # - regex:      '(?P<id>\S+) CMD_EXECUTED .+User (?P<user.name>\S+) - Remote_ip (?P<source.address>\S+) - Command "(?P<action>.+)" - Status "(?P<status>.+)"'
+          - regex:      '(?P<id>\S+) CMD_EXECUTED .+User '
+          - regex:      '(?P<user.name>\S+) - Remote_ip '
+          - regex:      '(?P<source.address>\S+) - Command "'
+          - regex:      '(?P<action>.+)" - Status "'
+          - regex:      '(?P<status>.+)"'
+    - event: 
+        id:             "003"
+        description:    "SSLVPN LOGIN"
+        match:          'SSLVPN LOGIN'
+        
+        # Fields aun no normalizados.
+        processors:     
+          - regex:      '(?P<id>SSLVPN) LOGIN .+ User '
+          - regex:      '(?P<user.name>\S+) - Client_ip '
+          - regex:      '(?P<source.address>\S+) - Nat_ip ".+" - Vserver '
+          - regex:      '(?P<destination.address>\S+) - Browser_type ".+" - SSLVPN_client_type .+ - Group'

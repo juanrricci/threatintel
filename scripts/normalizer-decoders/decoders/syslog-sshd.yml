@@ -1,0 +1,75 @@
+---
+
+mapname:    syslog ssh events
+author:     wazuh threatintell team
+created:    2021-02-05
+updated:    2021-02-05
+
+
+vendor:     syslog
+module:     sshd
+format:     plaintext
+reference:  www.example.com
+
+prematch:
+  action: OR
+  regex: 
+    - '^sshd\[\d+\]:'
+    - '^\w+\s+\d+\s+\d+:\d+:\d+\s+\S+\s+sshd\[\d+\]:'
+
+options:
+  - geo:  yes
+
+events:
+    - event: 
+        id:             "001"
+        description:    "Invalid user"
+        match:          '\]:\s+Invalid user'
+        processors: 
+              # - regex: '^(?P<timestamp>\w+\s+\d+\s+\d+:\d+:\d+)\s+(?P<hostname>\S+)\s+(?P<program_name>sshd)\[(?P<pid>\d+)\]: Invalid user (?P<dstuser>\S+)\s+from\s+(?P<srcip>\S+)\s+port\s+(?P<port>\S+)'
+              - regex:    '^(?P<timestamp>\w+\s+\d+\s+\d+:\d+:\d+)\s+'
+              - regex:    '(?P<destination.hostname>\S+)\s+sshd'
+              - regex:    '(?P<process.name>sshd)\['
+              - regex:    '\[(?P<process.pid>\d+)\]:'
+              - regex:    ' Invalid user (?P<user.name>\S+)\s+from\s+'
+              - regex:    '(?P<source.ip>\S+)\s+port\s+'
+              - regex:    'port\s+(?P<source.port>\S+)'
+              - set:
+                original: user__full_name
+                destination: user.full_name
+              - set:
+                original: user_agent__device__name
+                destination: user_agent.device.name  
+              - copy: 
+                original: user_name
+                destination: user.full_name
+              - geo:
+                original: source.ip
+              - geo: 
+                original: host.hostname
+    - event: 
+        id:             "002"
+        description:    "User connected"
+        match:          '\]:\s+User\s+'
+        processors: 
+              # - regex: '^(?P<timestamp>\w+\s+\d+\s+\d+:\d+:\d+)\s+(?P<hostname>\S+)\s+(?P<program_name>sshd)\[(?P<pid>\d+)\]: Invalid user (?P<dstuser>\S+)\s+from\s+(?P<srcip>\S+)\s+port\s+(?P<port>\S+)'
+              - regex:    '^(?P<timestamp>\w+\s+\d+\s+\d+:\d+:\d+)\s+'
+              - regex:    '(?P<destination.hostname>\S+)\s+sshd'
+              - regex:    '(?P<process.name>sshd)\['
+              - regex:    '\[(?P<process.pid>\d+)\]:'
+              - regex:    '\]:\s+User\s+(?P<user.name>\S+)\s+from\s+'
+              - regex:    '(?P<source.ip>\S+)\s+port\s+'
+              - regex:    'port\s+(?P<source.port>\S+)'
+              - set:
+                original: user__full_name
+                destination: user.full_name
+              - set:
+                original: user_agent__device__name
+                destination: user_agent.device.name  
+              - copy: 
+                original: user_name
+                destination: user.full_name
+              - geo:
+                original: source.ip
+              - geo: 
+                original: host.hostname

@@ -6,28 +6,11 @@ from pprint import pprint
 
 def JSONProcessSet(decodedLog, setList, benedictedLog):
     print('\nJSON setList:', setList)
-    extracted = benedict()
     for set in setList:
-        if True:
-        # if 'wcs_origin' in set:
-            # if True:
-            if set['wcs_origin'] == 'normalized':
-                try:
-                    decodedLog[set['destination']] = benedictedLog[set['original']]
-                except:
-                    continue
-            elif set['wcs_origin'] == 'extracted':
-                try:
-                    extracted[set['destination']] = benedictedLog[set['original']]
-                except:
-                    continue
-        # else:
-        #     try:
-        #         decodedLog[set['destination']] = benedictedLog[set['original']]
-        #     except:
-        #         continue
-    print('\nEXTRACTED: ', extracted)
-    decodedLog['extracted'] = extracted
+        try:
+            decodedLog[set['destination']] = benedictedLog[set['original']]
+        except:
+            continue
     return True
 
 def JSONProcessParse(decodedLog, parseList, benedictedLog):
