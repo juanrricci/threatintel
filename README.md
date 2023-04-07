@@ -1,6 +1,6 @@
 # Threat intelligence scripts
 
-This repository, https://github.com/juanrricci/threatintel/tree/main/scripts/normalizer-decoders, contains a collection of scripts for normalizing and decoding security threat data. These scripts can be useful for processing and analyzing threat intelligence information from various sources and formats, and converting it into a standardized and readable format.
+This repository contains a collection of scripts for normalizing and decoding security threat data. These scripts can be useful for processing and analyzing threat intelligence information from various sources and formats, and converting it into a standardized and readable format.
 
 The scripts include tools for normalizing IP addresses, domain names, email addresses, and file hashes, as well as for decoding encoded strings in Base64, ASCII, hexadecimal, and other formats.
 
